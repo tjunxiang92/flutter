@@ -101,6 +101,8 @@ class Slider extends StatefulWidget {
     Key key,
     @required this.value,
     @required this.onChanged,
+    this.onLeftChanged,
+    this.leftValue,
     this.onChangeStart,
     this.onChangeEnd,
     this.min: 0.0,
@@ -121,6 +123,7 @@ class Slider extends StatefulWidget {
   ///
   /// The slider's thumb is drawn at a position that corresponds to this value.
   final double value;
+  final double leftValue;
 
   /// Called during a drag when the user is selecting a new value for the slider
   /// by dragging.
@@ -159,6 +162,7 @@ class Slider extends StatefulWidget {
   ///  * [onChangeEnd] for a callback that is called when the user stops
   ///    changing the value.
   final ValueChanged<double> onChanged;
+  final ValueChanged<double> onLeftChanged;
 
   /// Called when the user starts selecting a new value for the slider.
   ///
@@ -349,6 +353,14 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void _handleLeftChanged(double value) {
+    assert(widget.onLeftChanged != null);
+    final double lerpValue = _lerp(value);
+    if (lerpValue != widget.value) {
+      widget.onLeftChanged(lerpValue);
+    }
+  }
+
   void _handleChanged(double value) {
     assert(widget.onChanged != null);
     final double lerpValue = _lerp(value);
@@ -406,11 +418,13 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
 
     return new _SliderRenderObjectWidget(
       value: _unlerp(widget.value),
+      leftValue: widget.leftValue,
       divisions: widget.divisions,
       label: widget.label,
       sliderTheme: sliderTheme,
       mediaQueryData: MediaQuery.of(context),
       onChanged: (widget.onChanged != null) && (widget.max > widget.min) ? _handleChanged : null,
+      onLeftChanged: (widget.onLeftChanged != null) && (widget.max > widget.min) ? _handleLeftChanged : null,
       onChangeStart: widget.onChangeStart != null ? _handleDragStart : null,
       onChangeEnd: widget.onChangeEnd != null ? _handleDragEnd : null,
       state: this,
@@ -422,22 +436,26 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
   const _SliderRenderObjectWidget({
     Key key,
     this.value,
+    this.leftValue,
     this.divisions,
     this.label,
     this.sliderTheme,
     this.mediaQueryData,
     this.onChanged,
+    this.onLeftChanged,
     this.onChangeStart,
     this.onChangeEnd,
     this.state,
   }) : super(key: key);
 
   final double value;
+  final double leftValue;
   final int divisions;
   final String label;
   final SliderThemeData sliderTheme;
   final MediaQueryData mediaQueryData;
   final ValueChanged<double> onChanged;
+  final ValueChanged<double> onLeftChanged;
   final ValueChanged<double> onChangeStart;
   final ValueChanged<double> onChangeEnd;
   final _SliderState state;
@@ -446,12 +464,14 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
   _RenderSlider createRenderObject(BuildContext context) {
     return new _RenderSlider(
       value: value,
+      leftValue: leftValue,
       divisions: divisions,
       label: label,
       sliderTheme: sliderTheme,
       theme: Theme.of(context),
       mediaQueryData: mediaQueryData,
       onChanged: onChanged,
+      onLeftChanged: onLeftChanged,
       onChangeStart: onChangeStart,
       onChangeEnd: onChangeEnd,
       state: state,
@@ -463,6 +483,7 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
   void updateRenderObject(BuildContext context, _RenderSlider renderObject) {
     renderObject
       ..value = value
+      ..leftValue = leftValue
       ..divisions = divisions
       ..label = label
       ..sliderTheme = sliderTheme
@@ -480,12 +501,14 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
 class _RenderSlider extends RenderBox {
   _RenderSlider({
     @required double value,
+    @required double leftValue,
     int divisions,
     String label,
     SliderThemeData sliderTheme,
     ThemeData theme,
     MediaQueryData mediaQueryData,
     ValueChanged<double> onChanged,
+    ValueChanged<double> onLeftChanged,
     this.onChangeStart,
     this.onChangeEnd,
     @required _SliderState state,
@@ -495,11 +518,13 @@ class _RenderSlider extends RenderBox {
        assert(textDirection != null),
        _label = label,
        _value = value,
+       _leftValue = leftValue,
        _divisions = divisions,
        _sliderTheme = sliderTheme,
        _theme = theme,
        _mediaQueryData = mediaQueryData,
        _onChanged = onChanged,
+       _onLeftChanged = onLeftChanged,
        _state = state,
        _textDirection = textDirection {
     _updateLabelPainter();
@@ -554,6 +579,30 @@ class _RenderSlider extends RenderBox {
   bool get isInteractive => onChanged != null;
 
   bool get isDiscrete => divisions != null && divisions > 0;
+
+  double get leftValue => _leftValue;
+  double _leftValue;
+  set leftValue(double newValue) {
+    assert(newValue != null && newValue >= 0.0 && newValue <= 1.0);
+    final double convertedValue = isDiscrete ? _discretize(newValue) : newValue;
+    if (convertedValue == _leftValue) {
+      return;
+    }
+    _leftValue = convertedValue;
+    if (isDiscrete) {
+      // Reset the duration to match the distance that we're traveling, so that
+      // whatever the distance, we still do it in _positionAnimationDuration,
+      // and if we get re-targeted in the middle, it still takes that long to
+      // get to the new location.
+      final double distance = (_leftValue - _state.positionController.value).abs();
+      _state.positionController.duration = distance != 0.0
+        ? _positionAnimationDuration * (1.0 / distance)
+        : 0.0;
+      _state.positionController.animateTo(value, curve: Curves.easeInOut);
+    } else {
+      _state.positionController.value = value;
+    }
+  }
 
   double get value => _value;
   double _value;
@@ -649,6 +698,28 @@ class _RenderSlider extends RenderBox {
       markNeedsSemanticsUpdate();
     }
   }
+
+  ValueChanged<double> get onLeftChanged => _onLeftChanged;
+  ValueChanged<double> _onLeftChanged;
+  set onLeftChanged(ValueChanged<double> value) {
+    if (value == _onLeftChanged) {
+      return;
+    }
+
+    final bool wasInteractive = isInteractive;
+    _onLeftChanged = value;
+    if (wasInteractive != isInteractive) {
+      if (isInteractive) {
+        _state.enableController.forward();
+      } else {
+        _state.enableController.reverse();
+      }
+      markNeedsPaint();
+      markNeedsSemanticsUpdate();
+    }
+  }
+
+  bool isLeftIndicator;
 
   ValueChanged<double> onChangeStart;
   ValueChanged<double> onChangeEnd;
@@ -753,7 +824,14 @@ class _RenderSlider extends RenderBox {
         onChangeStart(_discretize(value));
       }
       _currentDragValue = _getValueFromGlobalPosition(globalPosition);
-      onChanged(_discretize(_currentDragValue));
+      if ((_currentDragValue - _value).abs() < (_currentDragValue - _leftValue).abs()) {
+        isLeftIndicator = false;
+        onChanged(_discretize(_currentDragValue));
+      } else {
+        isLeftIndicator = true;
+        _onLeftChanged(_discretize(_currentDragValue));
+      }
+      
       _state.overlayController.forward();
       if (showValueIndicator) {
         _state.valueIndicatorController.forward();
@@ -774,6 +852,7 @@ class _RenderSlider extends RenderBox {
       if (onChangeEnd != null) {
         onChangeEnd(_discretize(_currentDragValue));
       }
+      isLeftIndicator = null;
       _active = false;
       _currentDragValue = 0.0;
       _state.overlayController.reverse();
@@ -785,7 +864,7 @@ class _RenderSlider extends RenderBox {
 
   void _handleDragStart(DragStartDetails details) => _startInteraction(details.globalPosition);
 
-  void _handleDragUpdate(DragUpdateDetails details) {
+ void _handleDragUpdate(DragUpdateDetails details) {
     if (isInteractive) {
       final double valueDelta = details.primaryDelta / _trackLength;
       switch (textDirection) {
@@ -796,7 +875,12 @@ class _RenderSlider extends RenderBox {
           _currentDragValue += valueDelta;
           break;
       }
-      onChanged(_discretize(_currentDragValue));
+
+      if (isLeftIndicator == true) {
+        onLeftChanged(_discretize(_currentDragValue));
+      } else if (isLeftIndicator == false) {
+        onChanged(_discretize(_currentDragValue));
+      }
     }
   }
 
@@ -804,7 +888,7 @@ class _RenderSlider extends RenderBox {
 
   void _handleTapDown(TapDownDetails details) => _startInteraction(details.globalPosition);
 
-  void _handleTapUp(TapUpDetails details) => _endInteraction();
+ void _handleTapUp(TapUpDetails details) => _endInteraction();
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -937,24 +1021,32 @@ class _RenderSlider extends RenderBox {
     final double trackTop = trackVerticalCenter - trackRadius;
     final double trackBottom = trackVerticalCenter + trackRadius;
     final double trackRight = trackLeft + trackLength;
+    final double trackLeftActive = trackLeft + trackLength * leftValue;
     final double trackActive = trackLeft + trackLength * visualPosition;
     final double thumbRadius = _sliderTheme.thumbShape.getPreferredSize(isInteractive, isDiscrete).width / 2.0;
     final double trackActiveLeft = math.max(0.0, trackActive - thumbRadius - thumbGap * (1.0 - _enableAnimation.value));
     final double trackActiveRight = math.min(trackActive + thumbRadius + thumbGap * (1.0 - _enableAnimation.value), trackRight);
-    final Rect trackLeftRect = new Rect.fromLTRB(trackLeft, trackTop, trackActiveLeft, trackBottom);
+    final Rect trackLeftRect = new Rect.fromLTRB(trackLeft, trackTop, trackLeftActive, trackBottom);
+    final Rect trackMiddleRect = new Rect.fromLTRB(trackLeftActive, trackTop, trackActiveLeft, trackBottom);
     final Rect trackRightRect = new Rect.fromLTRB(trackActiveRight, trackTop, trackRight, trackBottom);
 
     final Offset thumbCenter = new Offset(trackActive, trackVerticalCenter);
 
+    canvas.drawRect(trackLeftRect, rightTrackPaint);
     // Paint the track.
     if (visualPosition > 0.0) {
-      canvas.drawRect(trackLeftRect, leftTrackPaint);
+      canvas.drawRect(trackMiddleRect, leftTrackPaint);
     }
+
     if (visualPosition < 1.0) {
       canvas.drawRect(trackRightRect, rightTrackPaint);
     }
 
-    _paintOverlay(canvas, thumbCenter);
+    var newThumb = Offset(trackLeftActive, thumbCenter.dy);
+    if (isLeftIndicator == true)
+      _paintOverlay(canvas, newThumb);
+    else if (isLeftIndicator == false)
+      _paintOverlay(canvas, thumbCenter);
 
     _paintTickMarks(
       canvas,
@@ -982,6 +1074,21 @@ class _RenderSlider extends RenderBox {
       }
     }
 
+    // Generate a new Thumb
+    _sliderTheme.thumbShape.paint(
+      context,
+      newThumb,
+      activationAnimation: _valueIndicatorAnimation,
+      enableAnimation: _enableAnimation,
+      isDiscrete: isDiscrete,
+      labelPainter: _labelPainter,
+      parentBox: this,
+      sliderTheme: _sliderTheme,
+      textDirection: _textDirection,
+      value: _value,
+    );
+
+    // This paints the thumb
     _sliderTheme.thumbShape.paint(
       context,
       thumbCenter,

@@ -985,13 +985,15 @@ class _Dial extends StatefulWidget {
     @required this.selectedTime,
     @required this.mode,
     @required this.use24HourDials,
-    @required this.onChanged
+    @required this.onChanged,
+    @required this.onHourDragEnd,
   }) : assert(selectedTime != null);
 
   final TimeOfDay selectedTime;
   final _TimePickerMode mode;
   final bool use24HourDials;
   final ValueChanged<TimeOfDay> onChanged;
+  final Function onHourDragEnd;
 
   @override
   _DialState createState() => new _DialState();
@@ -1155,6 +1157,9 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
     _position = null;
     _center = null;
     _animateTo(_getThetaForTime(widget.selectedTime));
+
+    if (widget.mode == _TimePickerMode.hour)
+      widget.onHourDragEnd();
   }
 
   void _handleTapUp(TapUpDetails details) {
@@ -1176,6 +1181,9 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
     _dragging = false;
     _position = null;
     _center = null;
+
+    if (widget.mode == _TimePickerMode.hour)
+      widget.onHourDragEnd();
   }
 
   void _selectHour(int hour) {
@@ -1508,6 +1516,12 @@ class _TimePickerDialogState extends State<_TimePickerDialog> {
     });
   }
 
+  void _handleHourDragEnd() {
+    setState(() {
+      _mode = _TimePickerMode.minute;         
+    });
+  }
+
   void _handleCancel() {
     Navigator.pop(context);
   }
@@ -1521,7 +1535,7 @@ class _TimePickerDialogState extends State<_TimePickerDialog> {
     assert(debugCheckHasMediaQuery(context));
     final MediaQueryData media = MediaQuery.of(context);
     final TimeOfDayFormat timeOfDayFormat = localizations.timeOfDayFormat(alwaysUse24HourFormat: media.alwaysUse24HourFormat);
-    final bool use24HourDials = hourFormat(of: timeOfDayFormat) != HourFormat.h;
+    final bool use24HourDials = true; //hourFormat(of: timeOfDayFormat) != HourFormat.h;
     final ThemeData theme = Theme.of(context);
 
     final Widget picker = new Padding(
@@ -1533,6 +1547,7 @@ class _TimePickerDialogState extends State<_TimePickerDialog> {
           use24HourDials: use24HourDials,
           selectedTime: _selectedTime,
           onChanged: _handleTimeChanged,
+          onHourDragEnd: _handleHourDragEnd,
         )
       )
     );

@@ -936,7 +936,7 @@ class Transform extends SingleChildRenderObjectWidget {
     this.alignment: Alignment.center,
     this.transformHitTests: true,
     Widget child,
-  }) : transform = new Matrix4.diagonal3Values(scale, scale, 1.0),
+  }) : transform = new Matrix4.diagonal3Values(scale, 1.0, 1.0),
        super(key: key, child: child);
 
   /// The matrix to transform the child by during painting.
