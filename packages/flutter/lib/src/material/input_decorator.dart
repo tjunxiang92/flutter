@@ -1548,7 +1548,9 @@ class _InputDecoratorState extends State<InputDecorator> with TickerProviderStat
       child: new Text(
         decoration.hintText,
         style: hintStyle,
-        overflow: TextOverflow.ellipsis,
+        overflow: decoration.hintOverflow ? 
+          TextOverflow.ellipsis : 
+          null,
         textAlign: textAlign,
       ),
     );
@@ -1752,6 +1754,7 @@ class InputDecoration {
     this.helperStyle,
     this.hintText,
     this.hintStyle,
+    this.hintOverflow: true,
     this.errorText,
     this.errorStyle,
     this.errorMaxLines,
@@ -1867,6 +1870,8 @@ class InputDecoration {
   /// If null, defaults to a value derived from the base [TextStyle] for the
   /// input field and the current [Theme].
   final TextStyle hintStyle;
+
+  final bool hintOverflow;
 
   /// Text that appears below the input [child] and the border.
   ///
@@ -2054,6 +2059,7 @@ class InputDecoration {
     TextStyle helperStyle,
     String hintText,
     TextStyle hintStyle,
+    bool hintOverflow,
     String errorText,
     TextStyle errorStyle,
     int errorMaxLines,
@@ -2080,6 +2086,7 @@ class InputDecoration {
       helperStyle: helperStyle ?? this.helperStyle,
       hintText: hintText ?? this.hintText,
       hintStyle: hintStyle ?? this.hintStyle,
+      hintOverflow: hintOverflow ?? this.hintOverflow,
       errorText: errorText ?? this.errorText,
       errorStyle: errorStyle ?? this.errorStyle,
       errorMaxLines: errorMaxLines ?? this.errorMaxLines,
@@ -2137,6 +2144,7 @@ class InputDecoration {
         && typedOther.helperStyle == helperStyle
         && typedOther.hintText == hintText
         && typedOther.hintStyle == hintStyle
+        && typedOther.hintOverflow == hintOverflow
         && typedOther.errorText == errorText
         && typedOther.errorStyle == errorStyle
         && typedOther.errorMaxLines == errorMaxLines
@@ -2168,6 +2176,7 @@ class InputDecoration {
       hintText,
       hashValues( // Over 20 fields...
         hintStyle,
+        hintOverflow,
         errorText,
         errorStyle,
         errorMaxLines,
