@@ -1782,6 +1782,7 @@ class InputDecoration {
   const InputDecoration.collapsed({
     @required this.hintText,
     this.hintStyle,
+    this.hintOverflow: true,
     this.filled: false,
     this.fillColor,
     this.border: InputBorder.none,

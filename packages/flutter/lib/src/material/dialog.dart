@@ -432,6 +432,7 @@ class SimpleDialog extends StatelessWidget {
     this.title,
     this.titlePadding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 0.0),
     this.children,
+    this.bottomChildren,
     this.contentPadding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 16.0),
     this.semanticLabel,
   }) : assert(titlePadding != null),
@@ -460,6 +461,8 @@ class SimpleDialog extends StatelessWidget {
   ///
   /// Typically a list of [SimpleDialogOption]s.
   final List<Widget> children;
+
+  final Widget bottomChildren;
 
   /// Padding around the content.
   ///
@@ -519,6 +522,8 @@ class SimpleDialog extends StatelessWidget {
           child: new ListBody(children: children),
         )
       ));
+      if (bottomChildren != null)
+        body.add(bottomChildren);
     }
 
     Widget dialogChild = new IntrinsicWidth(
