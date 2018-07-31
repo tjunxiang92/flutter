@@ -142,9 +142,9 @@ void main() {
         await creator.createArchive();
         expect(
           verify(processManager.start(
-            typed(captureAny),
-            workingDirectory: typed(captureAny, named: 'workingDirectory'),
-            environment: typed(captureAny, named: 'environment'),
+            captureAny,
+            workingDirectory: captureAnyNamed('workingDirectory'),
+            environment: captureAnyNamed('environment'),
           )).captured[2]['PUB_CACHE'],
           endsWith(path.join('flutter', '.pub-cache')),
         );
@@ -313,7 +313,7 @@ void main() {
           new DateTime.now().difference(DateTime.parse(releases[0]['release_date'])),
           lessThan(const Duration(minutes: 1)),
         );
-        const JsonEncoder encoder = const JsonEncoder.withIndent('  ');
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
         expect(contents, equals(encoder.convert(jsonData)));
       });
     });

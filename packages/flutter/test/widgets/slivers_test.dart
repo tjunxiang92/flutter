@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 
-Future<Null> test(WidgetTester tester, double offset, { double anchor: 0.0 }) {
+Future<Null> test(WidgetTester tester, double offset, { double anchor = 0.0 }) {
   return tester.pumpWidget(
     new Directionality(
       textDirection: TextDirection.ltr,
@@ -14,11 +14,11 @@ Future<Null> test(WidgetTester tester, double offset, { double anchor: 0.0 }) {
         anchor: anchor / 600.0,
         offset: new ViewportOffset.fixed(offset),
         slivers: const <Widget>[
-          const SliverToBoxAdapter(child: const SizedBox(height: 400.0)),
-          const SliverToBoxAdapter(child: const SizedBox(height: 400.0)),
-          const SliverToBoxAdapter(child: const SizedBox(height: 400.0)),
-          const SliverToBoxAdapter(child: const SizedBox(height: 400.0)),
-          const SliverToBoxAdapter(child: const SizedBox(height: 400.0)),
+          SliverToBoxAdapter(child: SizedBox(height: 400.0)),
+          SliverToBoxAdapter(child: SizedBox(height: 400.0)),
+          SliverToBoxAdapter(child: SizedBox(height: 400.0)),
+          SliverToBoxAdapter(child: SizedBox(height: 400.0)),
+          SliverToBoxAdapter(child: SizedBox(height: 400.0)),
         ],
       ),
     ),

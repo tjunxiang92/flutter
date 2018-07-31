@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 
 void verifyPaintPosition(GlobalKey key, Offset ideal, bool visible) {
   final RenderSliver target = key.currentContext.findRenderObject();
-  expect(target.parent, const isInstanceOf<RenderViewport>());
+  expect(target.parent, isInstanceOf<RenderViewport>());
   final SliverPhysicalParentData parentData = target.parentData;
   final Offset actual = parentData.paintOffset;
   expect(actual, ideal);
@@ -259,10 +259,10 @@ void main() {
           slivers: <Widget>[
             new SliverPersistentHeader(delegate: new TestDelegate(), pinned: true),
             const SliverList(
-              delegate: const SliverChildListDelegate(const <Widget>[
-                const SizedBox(
+              delegate: SliverChildListDelegate(<Widget>[
+                SizedBox(
                   height: 300.0,
-                  child: const Text('X'),
+                  child: Text('X'),
                 ),
               ]),
             ),

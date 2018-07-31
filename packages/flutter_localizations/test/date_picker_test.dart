@@ -99,8 +99,8 @@ void main() {
     await tester.pumpWidget(new MaterialApp(
       locale: const Locale('en', 'US'),
       supportedLocales: const <Locale>[
-        const Locale('en', 'US'),
-        const Locale('fr', 'CA'),
+        Locale('en', 'US'),
+        Locale('fr', 'CA'),
       ],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: new Material(
@@ -144,7 +144,7 @@ void main() {
     await tester.pumpWidget(new MaterialApp(
       locale: const Locale('en', 'US'),
       supportedLocales: const <Locale>[
-        const Locale('en', 'US'),
+        Locale('en', 'US'),
       ],
       home: new Material(
         child: new Builder(
@@ -182,8 +182,8 @@ void main() {
     await tester.pumpWidget(new MaterialApp(
       locale: const Locale('en', 'US'),
       supportedLocales: const <Locale>[
-        const Locale('en', 'US'),
-        const Locale('fr', 'CA'),
+        Locale('en', 'US'),
+        Locale('fr', 'CA'),
       ],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: new Material(
@@ -229,7 +229,7 @@ Future<Null> _pumpBoilerplate(
   WidgetTester tester,
   Widget child, {
   Locale locale = const Locale('en', 'US'),
-  TextDirection textDirection: TextDirection.ltr
+  TextDirection textDirection = TextDirection.ltr
 }) async {
   await tester.pumpWidget(new Directionality(
     textDirection: TextDirection.ltr,

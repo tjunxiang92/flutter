@@ -42,7 +42,7 @@ class ExampleDragTargetState extends State<ExampleDragTarget> {
 }
 
 class Dot extends StatefulWidget {
-  const Dot({ Key key, this.color, this.size, this.child, this.tappable: false }) : super(key: key);
+  const Dot({ Key key, this.color, this.size, this.child, this.tappable = false }) : super(key: key);
 
   final Color color;
   final double size;
@@ -77,8 +77,8 @@ class ExampleDragSource extends StatelessWidget {
   const ExampleDragSource({
     Key key,
     this.color,
-    this.heavy: false,
-    this.under: true,
+    this.heavy = false,
+    this.under = true,
     this.child
   }) : super(key: key);
 
@@ -193,14 +193,14 @@ class MovableBall extends StatelessWidget {
         color: Colors.blue.shade700,
         size: kBallSize,
         tappable: true,
-        child: const Center(child: const Text('BALL'))
+        child: const Center(child: Text('BALL'))
       )
     );
     final Widget dashedBall = new Container(
       width: kBallSize,
       height: kBallSize,
       child: const CustomPaint(
-        painter: const DashOutlineCirclePainter()
+        painter: DashOutlineCirclePainter()
       )
     );
     if (position == ballPosition) {

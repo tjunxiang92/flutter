@@ -13,8 +13,8 @@ import 'package:flutter/rendering.dart';
 import 'sections.dart';
 import 'widgets.dart';
 
-const Color _kAppBackgroundColor = const Color(0xFF353662);
-const Duration _kScrollDuration = const Duration(milliseconds: 400);
+const Color _kAppBackgroundColor = Color(0xFF353662);
+const Duration _kScrollDuration = Duration(milliseconds: 400);
 const Curve _kScrollCurve = Curves.fastOutSlowIn;
 
 // This app's contents start out at _kHeadingMaxHeight and they function like
@@ -77,7 +77,7 @@ class _StatusBarPaddingSliver extends SingleChildRenderObjectWidget {
   const _StatusBarPaddingSliver({
     Key key,
     @required this.maxHeight,
-    this.scrollFactor: 5.0,
+    this.scrollFactor = 5.0,
   }) : assert(maxHeight != null && maxHeight >= 0.0),
        assert(scrollFactor != null && scrollFactor >= 1.0),
        super(key: key);
@@ -265,7 +265,7 @@ class _AllSectionsView extends AnimatedWidget {
     this.minHeight,
     this.midHeight,
     this.maxHeight,
-    this.sectionCards: const <Widget>[],
+    this.sectionCards = const <Widget>[],
   }) : assert(sections != null),
        assert(sectionCards != null),
        assert(sectionCards.length == sections.length),

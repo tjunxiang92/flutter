@@ -27,7 +27,7 @@ import '../vmservice.dart';
 // $ flutter fuchsia_reload -f ~/fuchsia -a 192.168.1.39 \
 //       -g //lib/flutter/examples/flutter_gallery:flutter_gallery
 
-final String ipv4Loopback = InternetAddress.LOOPBACK_IP_V4.address; // ignore: deprecated_member_use
+final String ipv4Loopback = InternetAddress.loopbackIPv4.address;
 
 class FuchsiaReloadCommand extends FlutterCommand {
   FuchsiaReloadCommand() {
@@ -196,7 +196,7 @@ class FuchsiaReloadCommand extends FlutterCommand {
   static const String _bold = '\u001B[0;1m';
   static const String _reset = '\u001B[0m';
 
-  String _vmServiceToString(VMService vmService, {int tabDepth: 0}) {
+  String _vmServiceToString(VMService vmService, {int tabDepth = 0}) {
     final Uri addr = vmService.httpAddress;
     final String embedder = vmService.vm.embedder;
     final int numIsolates = vmService.vm.isolates.length;
@@ -237,7 +237,7 @@ class FuchsiaReloadCommand extends FlutterCommand {
     return stringBuffer.toString();
   }
 
-  String _isolateToString(Isolate isolate, {int tabDepth: 0}) {
+  String _isolateToString(Isolate isolate, {int tabDepth = 0}) {
     final Uri vmServiceAddr = isolate.owner.vmService.httpAddress;
     final String name = isolate.name;
     final String shortName = name.substring(0, name.indexOf('\$'));
@@ -326,17 +326,19 @@ class FuchsiaReloadCommand extends FlutterCommand {
     if (!_fileExists(_target))
       throwToolExit('Couldn\'t find application entry point at $_target.');
 
-    final String packagesFileName = '${_projectName}_dart_library.packages';
-    _dotPackagesPath = '$_buildDir/dartlang/gen/$_projectRoot/$packagesFileName';
-    if (!_fileExists(_dotPackagesPath))
-      throwToolExit('Couldn\'t find .packages file at $_dotPackagesPath.');
-
     final String nameOverride = argResults['name-override'];
     if (nameOverride == null) {
       _binaryName = _projectName;
     } else {
       _binaryName = nameOverride;
     }
+
+    // When there's an override of the on-device binary name, use that name
+    // to locate the .packages file.
+    final String packagesFileName = '${_binaryName}_dart_library.packages';
+    _dotPackagesPath = '$_buildDir/dartlang/gen/$_projectRoot/$packagesFileName';
+    if (!_fileExists(_dotPackagesPath))
+      throwToolExit('Couldn\'t find .packages file at $_dotPackagesPath.');
 
     final String isolateNumber = argResults['isolate-number'];
     if (isolateNumber == null) {
@@ -384,8 +386,8 @@ class FuchsiaReloadCommand extends FlutterCommand {
         final int lastSpace = trimmed.lastIndexOf(' ');
         final String lastWord = trimmed.substring(lastSpace + 1);
         if ((lastWord != '.') && (lastWord != '..')) {
-          // ignore: deprecated_member_use
-          final int value = int.parse(lastWord, onError: (_) => null);
+
+          final int value = int.tryParse(lastWord);
           if (value != null)
             ports.add(value);
         }

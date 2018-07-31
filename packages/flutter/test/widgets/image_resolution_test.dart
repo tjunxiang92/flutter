@@ -52,7 +52,7 @@ const String testManifest = '''
 ''';
 
 class TestAssetBundle extends CachingAssetBundle {
-  TestAssetBundle({ this.manifest: testManifest });
+  TestAssetBundle({ this.manifest = testManifest });
 
   final String manifest;
 
@@ -83,7 +83,7 @@ class TestAssetBundle extends CachingAssetBundle {
   }
 
   @override
-  Future<String> loadString(String key, { bool cache: true }) {
+  Future<String> loadString(String key, { bool cache = true }) {
     if (key == 'AssetManifest.json')
       return new SynchronousFuture<String>(manifest);
     return null;
@@ -133,10 +133,12 @@ Widget buildImageAtRatio(String image, Key key, double ratio, bool inferSize, [A
         child: inferSize ?
           new Image(
             key: key,
+            excludeFromSemantics: true,
             image: new TestAssetImage(image)
           ) :
           new Image(
             key: key,
+            excludeFromSemantics: true,
             image: new TestAssetImage(image),
             height: imageSize,
             width: imageSize,
@@ -155,7 +157,7 @@ TestImage getTestImage(WidgetTester tester, Key key) {
 }
 
 Future<Null> pumpTreeToLayout(WidgetTester tester, Widget widget) {
-  const Duration pumpDuration = const Duration(milliseconds: 0);
+  const Duration pumpDuration = Duration(milliseconds: 0);
   const EnginePhase pumpPhase = EnginePhase.layout;
   return tester.pumpWidget(widget, pumpDuration, pumpPhase);
 }

@@ -12,12 +12,12 @@ class GalleryOptions {
   GalleryOptions({
     this.theme,
     this.textScaleFactor,
-    this.textDirection: TextDirection.ltr,
-    this.timeDilation: 1.0,
+    this.textDirection = TextDirection.ltr,
+    this.timeDilation = 1.0,
     this.platform,
-    this.showOffscreenLayersCheckerboard: false,
-    this.showRasterCacheImagesCheckerboard: false,
-    this.showPerformanceOverlay: false,
+    this.showOffscreenLayersCheckerboard = false,
+    this.showRasterCacheImagesCheckerboard = false,
+    this.showPerformanceOverlay = false,
   });
 
   final GalleryTheme theme;
@@ -84,7 +84,7 @@ class GalleryOptions {
 }
 
 const double _kItemHeight = 48.0;
-const EdgeInsetsDirectional _kItemPadding = const EdgeInsetsDirectional.only(start: 56.0);
+const EdgeInsetsDirectional _kItemPadding = EdgeInsetsDirectional.only(start: 56.0);
 
 class _OptionsItem extends StatelessWidget {
   const _OptionsItem({ Key key, this.child }) : super(key: key);

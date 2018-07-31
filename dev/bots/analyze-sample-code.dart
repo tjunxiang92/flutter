@@ -180,7 +180,7 @@ Future<Null> main() async {
     buffer.add('import \'dart:math\' as math;');
     buffer.add('import \'dart:typed_data\';');
     buffer.add('import \'dart:ui\' as ui;');
-    buffer.add('import \'package:flutter_test/flutter_test.dart\' hide TypeMatcher;');
+    buffer.add('import \'package:flutter_test/flutter_test.dart\';');
     for (FileSystemEntity file in flutterPackage.listSync(recursive: false, followLinks: false)) {
       if (file is File && path.extension(file.path) == '.dart') {
         buffer.add('');
@@ -240,10 +240,10 @@ dependencies:
           throw 'failed to parse error message: $error';
         }
         final String column = error.substring(colon2 + kColon.length, bullet2);
-        // ignore: deprecated_member_use
-        final int lineNumber = int.parse(line, radix: 10, onError: (String source) => throw 'failed to parse error message: $error');
-        // ignore: deprecated_member_use
-        final int columnNumber = int.parse(column, radix: 10, onError: (String source) => throw 'failed to parse error message: $error');
+
+        final int lineNumber = int.tryParse(line, radix: 10);
+
+        final int columnNumber = int.tryParse(column, radix: 10);
         if (lineNumber == null) {
           throw 'failed to parse error message: $error';
         }

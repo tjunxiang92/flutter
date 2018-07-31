@@ -293,11 +293,11 @@ void putRedirectInOldIndexLocation() {
 }
 
 List<String> findPackageNames() {
-  return findPackages().map((Directory dir) => path.basename(dir.path)).toList();
+  return findPackages().map((FileSystemEntity file) => path.basename(file.path)).toList();
 }
 
 /// Finds all packages in the Flutter SDK
-List<Directory> findPackages() {
+List<FileSystemEntity> findPackages() {
   return new Directory('packages')
     .listSync()
     .where((FileSystemEntity entity) {
@@ -307,13 +307,14 @@ List<Directory> findPackages() {
       // TODO(ianh): Use a real YAML parser here
       return !pubspec.readAsStringSync().contains('nodoc: true');
     })
+    .cast<Directory>()
     .toList();
 }
 
 /// Returns import or on-disk paths for all libraries in the Flutter SDK.
 ///
 /// diskPath toggles between import paths vs. disk paths.
-Iterable<String> libraryRefs({ bool diskPath: false }) sync* {
+Iterable<String> libraryRefs({ bool diskPath = false }) sync* {
   for (Directory dir in findPackages()) {
     final String dirName = path.basename(dir.path);
     for (FileSystemEntity file in new Directory('${dir.path}/lib').listSync()) {
@@ -336,7 +337,7 @@ Iterable<String> libraryRefs({ bool diskPath: false }) sync* {
   }
 }
 
-void printStream(Stream<List<int>> stream, { String prefix: '', List<Pattern> filter: const <Pattern>[] }) {
+void printStream(Stream<List<int>> stream, { String prefix = '', List<Pattern> filter = const <Pattern>[] }) {
   assert(prefix != null);
   assert(filter != null);
   stream

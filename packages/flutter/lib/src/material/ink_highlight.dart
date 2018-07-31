@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'ink_well.dart' show InteractiveInkFeature;
 import 'material.dart';
 
-const Duration _kHighlightFadeDuration = const Duration(milliseconds: 200);
+const Duration _kHighlightFadeDuration = Duration(milliseconds: 200);
 
 /// A visual emphasis on a part of a [Material] receiving user interaction.
 ///
@@ -39,7 +39,7 @@ class InkHighlight extends InteractiveInkFeature {
     @required MaterialInkController controller,
     @required RenderBox referenceBox,
     @required Color color,
-    BoxShape shape: BoxShape.rectangle,
+    BoxShape shape = BoxShape.rectangle,
     BorderRadius borderRadius,
     RectCallback rectCallback,
     VoidCallback onRemoved,

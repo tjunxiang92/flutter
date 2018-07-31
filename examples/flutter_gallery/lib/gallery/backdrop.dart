@@ -14,12 +14,12 @@ const double _kBackAppBarHeight = 56.0; // back layer (options) appbar height
 // The size of the front layer heading's left and right beveled corners.
 final Tween<BorderRadius> _kFrontHeadingBevelRadius = new BorderRadiusTween(
   begin: const BorderRadius.only(
-    topLeft: const Radius.circular(12.0),
-    topRight: const Radius.circular(12.0),
+    topLeft: Radius.circular(12.0),
+    topRight: Radius.circular(12.0),
   ),
   end: const BorderRadius.only(
-    topLeft: const Radius.circular(_kFrontHeadingHeight),
-    topRight: const Radius.circular(_kFrontHeadingHeight),
+    topLeft: Radius.circular(_kFrontHeadingHeight),
+    topRight: Radius.circular(_kFrontHeadingHeight),
   ),
 );
 
@@ -79,7 +79,7 @@ class _TappableWhileStatusIsState extends State<_TappableWhileStatusIs> {
 class _CrossFadeTransition extends AnimatedWidget {
   const _CrossFadeTransition({
     Key key,
-    this.alignment: Alignment.center,
+    this.alignment = Alignment.center,
     Animation<double> progress,
     this.child0,
     this.child1,
@@ -130,7 +130,7 @@ class _CrossFadeTransition extends AnimatedWidget {
 class _BackAppBar extends StatelessWidget {
   const _BackAppBar({
     Key key,
-    this.leading: const SizedBox(width: 56.0),
+    this.leading = const SizedBox(width: 56.0),
     @required this.title,
     this.trailing,
   }) : assert(leading != null), assert(title != null), super(key: key);

@@ -216,7 +216,7 @@ class DefaultWidgetsLocalizations implements WidgetsLocalizations {
   /// to create an instance of this class.
   ///
   /// [WidgetsApp] automatically adds this value to [WidgetApp.localizationsDelegates].
-  static const LocalizationsDelegate<WidgetsLocalizations> delegate = const _WidgetsLocalizationsDelegate();
+  static const LocalizationsDelegate<WidgetsLocalizations> delegate = _WidgetsLocalizationsDelegate();
 }
 
 class _LocalizationsScope extends InheritedWidget {
@@ -404,7 +404,7 @@ class Localizations extends StatefulWidget {
   /// If no [Localizations] widget is in scope then the [Localizations.localeOf]
   /// method will throw an exception, unless the `nullOk` argument is set to
   /// true, in which case it returns null.
-  static Locale localeOf(BuildContext context, { bool nullOk: false }) {
+  static Locale localeOf(BuildContext context, { bool nullOk = false }) {
     assert(context != null);
     assert(nullOk != null);
     final _LocalizationsScope scope = context.inheritFromWidgetOfExactType(_LocalizationsScope);

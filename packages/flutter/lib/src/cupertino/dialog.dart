@@ -10,7 +10,7 @@ import 'scrollbar.dart';
 
 // TODO(abarth): These constants probably belong somewhere more general.
 
-const TextStyle _kCupertinoDialogTitleStyle = const TextStyle(
+const TextStyle _kCupertinoDialogTitleStyle = TextStyle(
   fontFamily: '.SF UI Display',
   inherit: false,
   fontSize: 18.0,
@@ -21,7 +21,7 @@ const TextStyle _kCupertinoDialogTitleStyle = const TextStyle(
   textBaseline: TextBaseline.alphabetic,
 );
 
-const TextStyle _kCupertinoDialogContentStyle = const TextStyle(
+const TextStyle _kCupertinoDialogContentStyle = TextStyle(
   fontFamily: '.SF UI Text',
   inherit: false,
   fontSize: 13.4,
@@ -31,7 +31,7 @@ const TextStyle _kCupertinoDialogContentStyle = const TextStyle(
   textBaseline: TextBaseline.alphabetic,
 );
 
-const TextStyle _kCupertinoDialogActionStyle = const TextStyle(
+const TextStyle _kCupertinoDialogActionStyle = TextStyle(
   fontFamily: '.SF UI Text',
   inherit: false,
   fontSize: 16.8,
@@ -41,11 +41,11 @@ const TextStyle _kCupertinoDialogActionStyle = const TextStyle(
 );
 
 const double _kCupertinoDialogWidth = 270.0;
-const BoxDecoration _kCupertinoDialogFrontFillDecoration = const BoxDecoration(
-  color: const Color(0xccffffff),
+const BoxDecoration _kCupertinoDialogFrontFillDecoration = BoxDecoration(
+  color: Color(0xccffffff),
 );
-const BoxDecoration _kCupertinoDialogBackFill = const BoxDecoration(
-  color: const Color(0x77ffffff),
+const BoxDecoration _kCupertinoDialogBackFill = BoxDecoration(
+  color: Color(0x77ffffff),
 );
 
 const double _kEdgePadding = 20.0;
@@ -53,7 +53,7 @@ const double _kButtonHeight = 45.0;
 
 // TODO(gspencer): This color isn't correct. Instead, we should carve a hole in
 // the dialog and show more of the background.
-const Color _kButtonDividerColor = const Color(0xffd5d5d5);
+const Color _kButtonDividerColor = Color(0xffd5d5d5);
 
 /// An iOS-style dialog.
 ///
@@ -83,7 +83,7 @@ class CupertinoDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Center(
       child: new ClipRRect(
-        borderRadius: const BorderRadius.all(const Radius.circular(12.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         child: new DecoratedBox(
           // To get the effect, 2 white fills are needed. One blended with the
           // background before applying the blur and one overlaid on top of
@@ -106,9 +106,17 @@ class CupertinoDialog extends StatelessWidget {
 /// An iOS-style alert dialog.
 ///
 /// An alert dialog informs the user about situations that require
-/// acknowledgement. An alert dialog has an optional title and an optional list
-/// of actions. The title is displayed above the content and the actions are
-/// displayed below the content.
+/// acknowledgement. An alert dialog has an optional title, optional content,
+/// and an optional list of actions. The title is displayed above the content
+/// and the actions are displayed below the content.
+///
+/// This dialog styles its title and content (typically a message) to match the
+/// standard iOS title and message dialog text style. These default styles can
+/// be overridden by explicitly defining [TextStyle]s for [Text] widgets that
+/// are part of the title or content.
+///
+/// To display action buttons that look like standard iOS dialog buttons,
+/// provide [CupertinoDialogAction]s for the [actions] given to this dialog.
 ///
 /// Typically passed as the child widget to [showDialog], which displays the
 /// dialog.
@@ -116,6 +124,7 @@ class CupertinoDialog extends StatelessWidget {
 /// See also:
 ///
 ///  * [CupertinoDialog], which is a generic iOS-style dialog.
+///  * [CupertinoDialogAction], which is an iOS-style dialog button.
 ///  * <https://developer.apple.com/ios/human-interface-guidelines/views/alerts/>
 class CupertinoAlertDialog extends StatelessWidget {
   /// Creates an iOS-style alert dialog.
@@ -125,7 +134,7 @@ class CupertinoAlertDialog extends StatelessWidget {
     Key key,
     this.title,
     this.content,
-    this.actions: const <Widget>[],
+    this.actions = const <Widget>[],
     this.scrollController,
     this.actionScrollController,
   })  : assert(actions != null),
@@ -184,7 +193,7 @@ class CupertinoAlertDialog extends StatelessWidget {
       );
       children.add(new Flexible(flex: 3, child: titleSection));
       // Add padding between the sections.
-      children.add(const Padding(padding: const EdgeInsets.only(top: 8.0)));
+      children.add(const Padding(padding: EdgeInsets.only(top: 8.0)));
     }
 
     if (actions.isNotEmpty) {
@@ -220,8 +229,8 @@ class CupertinoDialogAction extends StatelessWidget {
   /// Creates an action for an iOS-style dialog.
   const CupertinoDialogAction({
     this.onPressed,
-    this.isDefaultAction: false,
-    this.isDestructiveAction: false,
+    this.isDefaultAction = false,
+    this.isDestructiveAction = false,
     @required this.child,
   }) : assert(child != null);
 
@@ -362,7 +371,7 @@ class _CupertinoAlertTitleSection extends StatelessWidget {
 
     // Add padding between the widgets if necessary.
     if (titleContentGroup.length > 1) {
-      titleContentGroup.insert(1, const Padding(padding: const EdgeInsets.only(top: 8.0)));
+      titleContentGroup.insert(1, const Padding(padding: EdgeInsets.only(top: 8.0)));
     }
 
     return new CupertinoScrollbar(

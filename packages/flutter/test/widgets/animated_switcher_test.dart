@@ -89,7 +89,7 @@ void main() {
   testWidgets('AnimatedSwitcher handles null children.', (WidgetTester tester) async {
     await tester.pumpWidget(
       const AnimatedSwitcher(
-        duration: const Duration(milliseconds: 100),
+        duration: Duration(milliseconds: 100),
         child: null,
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
@@ -127,7 +127,7 @@ void main() {
 
     await tester.pumpWidget(
       const AnimatedSwitcher(
-        duration: const Duration(milliseconds: 100),
+        duration: Duration(milliseconds: 100),
         child: null,
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
@@ -140,7 +140,7 @@ void main() {
 
     await tester.pumpWidget(
       const AnimatedSwitcher(
-        duration: const Duration(milliseconds: 100),
+        duration: Duration(milliseconds: 100),
         child: null,
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
@@ -221,7 +221,7 @@ void main() {
 
     expect(find.byType(Column), findsOneWidget);
     for (Widget child in foundChildren) {
-      expect(child, const isInstanceOf<KeyedSubtree>());
+      expect(child, isInstanceOf<KeyedSubtree>());
     }
 
     await tester.pumpWidget(
@@ -239,7 +239,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     for (Widget child in foundChildren) {
-      expect(child, const isInstanceOf<KeyedSubtree>());
+      expect(child, isInstanceOf<KeyedSubtree>());
       expect(
         find.descendant(of: find.byWidget(child), matching: find.byType(SizeTransition)),
         findsOneWidget,
@@ -389,7 +389,7 @@ void main() {
 
     expect(foundChildren.length, equals(3));
     for (Widget child in foundChildren) {
-      expect(child, const isInstanceOf<KeyedSubtree>());
+      expect(child, isInstanceOf<KeyedSubtree>());
       expect(
         find.descendant(of: find.byWidget(child), matching: find.byType(FadeTransition)),
         findsOneWidget,
@@ -419,7 +419,7 @@ void main() {
 
     expect(foundChildren.length, equals(3));
     for (Widget child in foundChildren) {
-      expect(child, const isInstanceOf<KeyedSubtree>());
+      expect(child, isInstanceOf<KeyedSubtree>());
       expect(
         find.descendant(of: find.byWidget(child), matching: find.byType(ScaleTransition)),
         findsOneWidget,

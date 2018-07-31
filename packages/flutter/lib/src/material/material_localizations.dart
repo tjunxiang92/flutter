@@ -144,19 +144,19 @@ abstract class MaterialLocalizations {
   /// user interaction with elements behind it.
   String get modalBarrierDismissLabel;
 
-  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a 
+  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a
   /// drawer widget is opened.
   String get drawerLabel;
- 
-  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a 
+
+  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a
   /// popup menu widget is opened.
   String get popupMenuLabel;
 
-  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a 
+  /// Label read out by accessibility tools (TalkBack or VoiceOver) when a
   /// dialog widget is opened.
   String get dialogLabel;
 
-  /// Label read out by accessibility tools (TalkBack or VoiceOver) when an 
+  /// Label read out by accessibility tools (TalkBack or VoiceOver) when an
   /// alert dialog widget is opened.
   String get alertDialogLabel;
 
@@ -168,7 +168,7 @@ abstract class MaterialLocalizations {
   ///
   /// The documentation for [TimeOfDayFormat] enum values provides details on
   /// each supported layout.
-  TimeOfDayFormat timeOfDayFormat({ bool alwaysUse24HourFormat: false });
+  TimeOfDayFormat timeOfDayFormat({ bool alwaysUse24HourFormat = false });
 
   /// Provides geometric text preferences for the current locale.
   ///
@@ -196,7 +196,7 @@ abstract class MaterialLocalizations {
   ///
   /// If [alwaysUse24HourFormat] is true, formats hour using [HourFormat.HH]
   /// rather than the default for the current locale.
-  String formatHour(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat: false });
+  String formatHour(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat = false });
 
   /// Formats [TimeOfDay.minute] in the given time of day according to the value
   /// of [timeOfDayFormat].
@@ -208,7 +208,7 @@ abstract class MaterialLocalizations {
   /// rather than the default for the current locale. This value is usually
   /// passed from [MediaQueryData.alwaysUse24HourFormat], which has platform-
   /// specific behavior.
-  String formatTimeOfDay(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat: false });
+  String formatTimeOfDay(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat = false });
 
   /// Full unabbreviated year format, e.g. 2017 rather than 17.
   String formatYear(DateTime date);
@@ -326,7 +326,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   const DefaultMaterialLocalizations();
 
   // Ordered to match DateTime.monday=1, DateTime.sunday=6
-  static const List<String> _shortWeekdays = const <String>[
+  static const List<String> _shortWeekdays = <String>[
     'Mon',
     'Tue',
     'Wed',
@@ -337,7 +337,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   ];
 
   // Ordered to match DateTime.monday=1, DateTime.sunday=6
-  static const List<String> _weekdays = const <String>[
+  static const List<String> _weekdays = <String>[
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -347,7 +347,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
     'Sunday',
   ];
 
-  static const List<String> _narrowWeekdays = const <String>[
+  static const List<String> _narrowWeekdays = <String>[
     'S',
     'M',
     'T',
@@ -357,7 +357,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
     'S',
   ];
 
-  static const List<String> _shortMonths = const <String>[
+  static const List<String> _shortMonths = <String>[
     'Jan',
     'Feb',
     'Mar',
@@ -372,7 +372,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
     'Dec',
   ];
 
-  static const List<String> _months = const <String>[
+  static const List<String> _months = <String>[
     'January',
     'February',
     'March',
@@ -388,7 +388,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   ];
 
   @override
-  String formatHour(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat: false }) {
+  String formatHour(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat = false }) {
     final TimeOfDayFormat format = timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat);
     switch (format) {
       case TimeOfDayFormat.h_colon_mm_space_a:
@@ -473,7 +473,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   }
 
   @override
-  String formatTimeOfDay(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat: false }) {
+  String formatTimeOfDay(TimeOfDay timeOfDay, { bool alwaysUse24HourFormat = false }) {
     // Not using intl.DateFormat for two reasons:
     //
     // - DateFormat supports more formats than our material time picker does,
@@ -622,7 +622,7 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   String get modalBarrierDismissLabel => 'Dismiss';
 
   @override
-  TimeOfDayFormat timeOfDayFormat({ bool alwaysUse24HourFormat: false }) {
+  TimeOfDayFormat timeOfDayFormat({ bool alwaysUse24HourFormat = false }) {
     return alwaysUse24HourFormat
       ? TimeOfDayFormat.HH_colon_mm
       : TimeOfDayFormat.h_colon_mm_space_a;
@@ -656,5 +656,5 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   /// to create an instance of this class.
   ///
   /// [MaterialApp] automatically adds this value to [MaterialApp.localizationsDelegates].
-  static const LocalizationsDelegate<MaterialLocalizations> delegate = const _MaterialLocalizationsDelegate();
+  static const LocalizationsDelegate<MaterialLocalizations> delegate = _MaterialLocalizationsDelegate();
 }

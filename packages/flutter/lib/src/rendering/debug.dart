@@ -10,7 +10,7 @@ export 'package:flutter/foundation.dart' show debugPrint;
 // Any changes to this file should be reflected in the debugAssertAllRenderVarsUnset()
 // function below.
 
-const HSVColor _kDebugDefaultRepaintColor = const HSVColor.fromAHSV(0.4, 60.0, 1.0, 1.0);
+const HSVColor _kDebugDefaultRepaintColor = HSVColor.fromAHSV(0.4, 60.0, 1.0, 1.0);
 
 /// Causes each RenderBox to paint a box around its bounds, and some extra
 /// boxes, such as [RenderPadding], to draw construction lines.
@@ -38,6 +38,11 @@ bool debugPaintLayerBordersEnabled = false;
 bool debugPaintPointersEnabled = false;
 
 /// Overlay a rotating set of colors when repainting layers in checked mode.
+///
+/// See also:
+///
+///  * [RepaintBoundary], which can be used to contain repaints when unchanged
+///    areas are being excessively repainted.
 bool debugRepaintRainbowEnabled = false;
 
 /// Overlay a rotating set of colors when repainting text in checked mode.
@@ -103,12 +108,12 @@ bool debugCheckIntrinsicSizes = false;
 ///
 ///  * [debugPrintLayouts], which does something similar for layout but using
 ///    console output.
-///
 ///  * [debugProfileBuildsEnabled], which does something similar for widgets
 ///    being rebuilt, and [debugPrintRebuildDirtyWidgets], its console
 ///    equivalent.
-///
 ///  * The discussion at [RendererBinding.drawFrame].
+///  * [RepaintBoundary], which can be used to contain repaints when unchanged
+///    areas are being excessively repainted.
 bool debugProfilePaintsEnabled = false;
 
 /// Setting to true will cause all clipping effects from the layer tree to be
@@ -162,7 +167,7 @@ void _debugDrawDoubleRect(Canvas canvas, Rect outerRect, Rect innerRect, Color c
 ///
 /// Called by [RenderPadding.debugPaintSize] when [debugPaintSizeEnabled] is
 /// true.
-void debugPaintPadding(Canvas canvas, Rect outerRect, Rect innerRect, { double outlineWidth: 2.0 }) {
+void debugPaintPadding(Canvas canvas, Rect outerRect, Rect innerRect, { double outlineWidth = 2.0 }) {
   assert(() {
     if (innerRect != null && !innerRect.isEmpty) {
       _debugDrawDoubleRect(canvas, outerRect, innerRect, const Color(0x900090FF));
@@ -187,7 +192,7 @@ void debugPaintPadding(Canvas canvas, Rect outerRect, Rect innerRect, { double o
 /// The `debugCheckIntrinsicSizesOverride` argument can be provided to override
 /// the expected value for [debugCheckIntrinsicSizes]. (This exists because the
 /// test framework itself overrides this value in some cases.)
-bool debugAssertAllRenderVarsUnset(String reason, { bool debugCheckIntrinsicSizesOverride: false }) {
+bool debugAssertAllRenderVarsUnset(String reason, { bool debugCheckIntrinsicSizesOverride = false }) {
   assert(() {
     if (debugPaintSizeEnabled ||
         debugPaintBaselinesEnabled ||

@@ -19,8 +19,8 @@ class CupertinoActivityIndicator extends StatefulWidget {
   /// Creates an iOS-style activity indicator.
   const CupertinoActivityIndicator({
     Key key,
-    this.animating: true,
-    this.radius: _kDefaultIndicatorRadius,
+    this.animating = true,
+    this.radius = _kDefaultIndicatorRadius,
   }) : assert(animating != null),
        assert(radius != null),
        assert(radius > 0),
@@ -92,7 +92,7 @@ const double _kTwoPI = math.pi * 2.0;
 const int _kTickCount = 12;
 const int _kHalfTickCount = _kTickCount ~/ 2;
 const Color _kTickColor = CupertinoColors.lightBackgroundGray;
-const Color _kActiveTickColor = const Color(0xFF9D9D9D);
+const Color _kActiveTickColor = Color(0xFF9D9D9D);
 
 class _CupertinoActivityIndicatorPainter extends CustomPainter {
   _CupertinoActivityIndicatorPainter({

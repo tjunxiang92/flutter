@@ -15,13 +15,13 @@ import '../base/common.dart' show throwToolExit;
 import '../base/file_system.dart';
 import '../base/io.dart';
 import '../base/logger.dart';
-import '../base/port_scanner.dart';
 import '../base/process.dart';
 import '../base/process_manager.dart';
 import '../base/utils.dart';
 import '../build_info.dart';
 import '../device.dart';
 import '../globals.dart';
+import '../project.dart';
 import '../protocol_discovery.dart';
 
 import 'adb.dart';
@@ -31,7 +31,7 @@ import 'android_sdk.dart';
 enum _HardwareType { emulator, physical }
 
 /// Map to help our `isLocalEmulator` detection.
-const Map<String, _HardwareType> _knownHardware = const <String, _HardwareType>{
+const Map<String, _HardwareType> _knownHardware = <String, _HardwareType>{
   'goldfish': _HardwareType.emulator,
   'qcom': _HardwareType.physical,
   'ranchu': _HardwareType.emulator,
@@ -39,6 +39,7 @@ const Map<String, _HardwareType> _knownHardware = const <String, _HardwareType>{
   'samsungexynos7870': _HardwareType.physical,
   'samsungexynos8890': _HardwareType.physical,
   'samsungexynos8895': _HardwareType.physical,
+  'samsungexynos9810': _HardwareType.physical,
 };
 
 class AndroidDevices extends PollingDeviceDiscovery {
@@ -210,8 +211,8 @@ class AndroidDevice extends Device {
       // Sample output: '22'
       final String sdkVersion = await _getProperty('ro.build.version.sdk');
 
-      // ignore: deprecated_member_use
-      final int sdkVersionParsed = int.parse(sdkVersion, onError: (String source) => null);
+
+      final int sdkVersionParsed = int.tryParse(sdkVersion);
       if (sdkVersionParsed == null) {
         printError('Unexpected response from getprop: "$sdkVersion"');
         return false;
@@ -242,7 +243,7 @@ class AndroidDevice extends Device {
 
   String _getSourceSha1(ApplicationPackage app) {
     final AndroidApk apk = app;
-    final File shaFile = fs.file('${apk.apkPath}.sha1');
+    final File shaFile = fs.file('${apk.file.path}.sha1');
     return shaFile.existsSync() ? shaFile.readAsStringSync() : '';
   }
 
@@ -270,16 +271,16 @@ class AndroidDevice extends Device {
   @override
   Future<bool> installApp(ApplicationPackage app) async {
     final AndroidApk apk = app;
-    if (!fs.isFileSync(apk.apkPath)) {
-      printError('"${apk.apkPath}" does not exist.');
+    if (!apk.file.existsSync()) {
+      printError('"${fs.path.relative(apk.file.path)}" does not exist.');
       return false;
     }
 
     if (!await _checkForSupportedAdbVersion() || !await _checkForSupportedAndroidVersion())
       return false;
 
-    final Status status = logger.startProgress('Installing ${apk.apkPath}...', expectSlowOperation: true);
-    final RunResult installResult = await runAsync(adbCommandForDevice(<String>['install', '-r', apk.apkPath]));
+    final Status status = logger.startProgress('Installing ${fs.path.relative(apk.file.path)}...', expectSlowOperation: true);
+    final RunResult installResult = await runAsync(adbCommandForDevice(<String>['install', '-t', '-r', apk.file.path]));
     status.stop();
     // Some versions of adb exit with exit code 0 even on failure :(
     // Parsing the output to check for failures.
@@ -352,10 +353,10 @@ class AndroidDevice extends Device {
     String route,
     DebuggingOptions debuggingOptions,
     Map<String, dynamic> platformArgs,
-    bool prebuiltApplication: false,
-    bool applicationNeedsRebuild: false,
-    bool usesTerminalUi: true,
-    bool ipv6: false,
+    bool prebuiltApplication = false,
+    bool applicationNeedsRebuild = false,
+    bool usesTerminalUi = true,
+    bool ipv6 = false,
   }) async {
     if (!await _checkForSupportedAdbVersion() || !await _checkForSupportedAndroidVersion())
       return new LaunchResult.failed();
@@ -375,12 +376,13 @@ class AndroidDevice extends Device {
     if (!prebuiltApplication) {
       printTrace('Building APK');
       await buildApk(
+          project: new FlutterProject(fs.currentDirectory),
           target: mainPath,
           buildInfo: buildInfo,
       );
       // Package has been built, so we can get the updated application ID and
       // activity name from the .apk.
-      package = await AndroidApk.fromCurrentDirectory();
+      package = await AndroidApk.fromAndroidProject(new FlutterProject(fs.currentDirectory).android);
     }
 
     printTrace("Stopping app '${package.name}' on $name.");
@@ -510,13 +512,16 @@ class AndroidDevice extends Device {
   bool get supportsScreenshot => true;
 
   @override
-  Future<Null> takeScreenshot(File outputFile) async {
+  Future<void> takeScreenshot(File outputFile) async {
     const String remotePath = '/data/local/tmp/flutter_screenshot.png';
     await runCheckedAsync(adbCommandForDevice(<String>['shell', 'screencap', '-p', remotePath]));
     await runCheckedAsync(adbCommandForDevice(<String>['pull', remotePath, outputFile.path]));
     await runCheckedAsync(adbCommandForDevice(<String>['shell', 'rm', remotePath]));
   }
 
+  // TODO(dantup): discoverApps is no longer used and can possibly be removed.
+  // Waiting for a response here:
+  // https://github.com/flutter/flutter/pull/18873#discussion_r198862179
   @override
   Future<List<DiscoveredApp>> discoverApps() async {
     final RegExp discoverExp = new RegExp(r'DISCOVER: (.*)');
@@ -693,7 +698,7 @@ class _AdbLogReader extends DeviceLogReader {
         _timeOrigin = null;
     runCommand(device.adbCommandForDevice(args)).then<Null>((Process process) {
       _process = process;
-      const Utf8Decoder decoder = const Utf8Decoder(allowMalformed: true);
+      const Utf8Decoder decoder = Utf8Decoder(allowMalformed: true);
       _process.stdout.transform(decoder).transform(const LineSplitter()).listen(_onLine);
       _process.stderr.transform(decoder).transform(const LineSplitter()).listen(_onLine);
       _process.exitCode.whenComplete(() {
@@ -818,8 +823,8 @@ class _AndroidDevicePortForwarder extends DevicePortForwarder {
   final AndroidDevice device;
 
   static int _extractPort(String portString) {
-    // ignore: deprecated_member_use
-    return int.parse(portString.trim(), onError: (_) => null);
+
+    return int.tryParse(portString.trim());
   }
 
   @override
@@ -844,7 +849,7 @@ class _AndroidDevicePortForwarder extends DevicePortForwarder {
         final int devicePort = _extractPort(splitLine[2]);
 
         // Failed, skip.
-        if ((hostPort == null) || (devicePort == null))
+        if (hostPort == null || devicePort == null)
           continue;
 
         ports.add(new ForwardedPort(hostPort, devicePort));
@@ -855,15 +860,29 @@ class _AndroidDevicePortForwarder extends DevicePortForwarder {
   }
 
   @override
-  Future<int> forward(int devicePort, { int hostPort }) async {
-    if ((hostPort == null) || (hostPort == 0)) {
-      // Auto select host port.
-      hostPort = await portScanner.findAvailablePort();
-    }
-
-    await runCheckedAsync(device.adbCommandForDevice(
+  Future<int> forward(int devicePort, {int hostPort}) async {
+    hostPort ??= 0;
+    final RunResult process = await runCheckedAsync(device.adbCommandForDevice(
       <String>['forward', 'tcp:$hostPort', 'tcp:$devicePort']
     ));
+
+    if (process.stderr.isNotEmpty)
+      process.throwException('adb returned error:\n${process.stderr}');
+
+    if (process.exitCode != 0) {
+      if (process.stdout.isNotEmpty)
+        process.throwException('adb returned error:\n${process.stdout}');
+      process.throwException('adb failed without a message');
+    }
+
+    if (hostPort == 0) {
+      if (process.stdout.isEmpty)
+        process.throwException('adb did not report forwarded port');
+      hostPort = int.tryParse(process.stdout) ?? (throw 'adb returned invalid port number:\n${process.stdout}');
+    } else {
+      if (process.stdout.isNotEmpty)
+        process.throwException('adb returned error:\n${process.stdout}');
+    }
 
     return hostPort;
   }

@@ -17,7 +17,7 @@ import '../src/common.dart';
 import '../src/context.dart';
 
 /// Test case timeout for tests involving project analysis.
-const Timeout allowForSlowAnalyzeTests = const Timeout.factor(5.0);
+const Timeout allowForSlowAnalyzeTests = Timeout.factor(5.0);
 
 void main() {
   final String analyzerSeparator = platform.isWindows ? '-' : '•';
@@ -142,7 +142,7 @@ void main() {
         foo.writeAsStringSync('''
 import 'bar.dart';
 
-foo() => bar();
+void foo() => bar();
 ''');
 
         final File bar = fs.file(fs.path.join(tempDir.path, 'bar.dart'));
@@ -224,7 +224,7 @@ Future<Null> runCommand({
   List<String> arguments,
   List<String> statusTextContains,
   List<String> errorTextContains,
-  bool toolExit: false,
+  bool toolExit = false,
   String exitMessageContains,
 }) async {
   try {

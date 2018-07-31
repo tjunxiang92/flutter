@@ -113,13 +113,13 @@ class AnimatedCrossFade extends StatefulWidget {
     Key key,
     @required this.firstChild,
     @required this.secondChild,
-    this.firstCurve: Curves.linear,
-    this.secondCurve: Curves.linear,
-    this.sizeCurve: Curves.linear,
-    this.alignment: Alignment.topCenter,
+    this.firstCurve = Curves.linear,
+    this.secondCurve = Curves.linear,
+    this.sizeCurve = Curves.linear,
+    this.alignment = Alignment.topCenter,
     @required this.crossFadeState,
     @required this.duration,
-    this.layoutBuilder: defaultLayoutBuilder,
+    this.layoutBuilder = defaultLayoutBuilder,
   }) : assert(firstChild != null),
        assert(secondChild != null),
        assert(firstCurve != null),
@@ -300,8 +300,8 @@ class _AnimatedCrossFadeState extends State<AnimatedCrossFade> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
-    const Key kFirstChildKey = const ValueKey<CrossFadeState>(CrossFadeState.showFirst);
-    const Key kSecondChildKey = const ValueKey<CrossFadeState>(CrossFadeState.showSecond);
+    const Key kFirstChildKey = ValueKey<CrossFadeState>(CrossFadeState.showFirst);
+    const Key kSecondChildKey = ValueKey<CrossFadeState>(CrossFadeState.showSecond);
     final bool transitioningForwards = _controller.status == AnimationStatus.completed || _controller.status == AnimationStatus.forward;
 
     Key topKey;

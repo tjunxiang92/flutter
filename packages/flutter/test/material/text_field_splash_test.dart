@@ -16,7 +16,7 @@ class TestInkSplash extends InkSplash {
     RenderBox referenceBox,
     Offset position,
     Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,
@@ -55,7 +55,7 @@ class TestInkSplashFactory extends InteractiveInkFeatureFactory {
     RenderBox referenceBox,
     Offset position,
     Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,
@@ -152,12 +152,12 @@ void main() {
             child: new ListView(
               children: <Widget>[
                 const TextField(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'label1',
                   ),
                 ),
                 const TextField(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'label2',
                   ),
                 ),

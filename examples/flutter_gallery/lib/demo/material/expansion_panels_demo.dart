@@ -77,7 +77,7 @@ class DualHeaderWithHint extends StatelessWidget {
 
 class CollapsibleBody extends StatelessWidget {
   const CollapsibleBody({
-    this.margin: EdgeInsets.zero,
+    this.margin = EdgeInsets.zero,
     this.child,
     this.onSave,
     this.onCancel
@@ -118,7 +118,7 @@ class CollapsibleBody extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 8.0),
                 child: new FlatButton(
                   onPressed: onCancel,
-                  child: const Text('CANCEL', style: const TextStyle(
+                  child: const Text('CANCEL', style: TextStyle(
                     color: Colors.black54,
                     fontSize: 15.0,
                     fontWeight: FontWeight.w500

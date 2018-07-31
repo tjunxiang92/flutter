@@ -10,11 +10,11 @@ import 'package:flutter/widgets.dart';
 import 'ink_well.dart';
 import 'material.dart';
 
-const Duration _kUnconfirmedRippleDuration = const Duration(seconds: 1);
-const Duration _kFadeInDuration = const Duration(milliseconds: 75);
-const Duration _kRadiusDuration = const Duration(milliseconds: 225);
-const Duration _kFadeOutDuration = const Duration(milliseconds: 375);
-const Duration _kCancelDuration = const Duration(milliseconds: 75);
+const Duration _kUnconfirmedRippleDuration = Duration(seconds: 1);
+const Duration _kFadeInDuration = Duration(milliseconds: 75);
+const Duration _kRadiusDuration = Duration(milliseconds: 225);
+const Duration _kFadeOutDuration = Duration(milliseconds: 375);
+const Duration _kCancelDuration = Duration(milliseconds: 75);
 
 // The fade out begins 225ms after the _fadeOutController starts. See confirm().
 const double _kFadeOutIntervalStart = 225.0 / 375.0;
@@ -45,7 +45,7 @@ class _InkRippleFactory extends InteractiveInkFeatureFactory {
     @required RenderBox referenceBox,
     @required Offset position,
     @required Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,
@@ -74,7 +74,7 @@ class _InkRippleFactory extends InteractiveInkFeatureFactory {
 /// This object is rarely created directly. Instead of creating an ink ripple,
 /// consider using an [InkResponse] or [InkWell] widget, which uses
 /// gestures (such as tap and long-press) to trigger ink splashes. This class
-/// is used when the [Theme]'s [ThemeData.splashType] is [InkSplashType.ripple].
+/// is used when the [Theme]'s [ThemeData.splashFactory] is [InkRipple.splashFactory].
 ///
 /// See also:
 ///
@@ -90,7 +90,7 @@ class _InkRippleFactory extends InteractiveInkFeatureFactory {
 class InkRipple extends InteractiveInkFeature {
   /// Used to specify this type of ink splash for an [InkWell], [InkResponse]
   /// or material [Theme].
-  static const InteractiveInkFeatureFactory splashFactory = const _InkRippleFactory();
+  static const InteractiveInkFeatureFactory splashFactory = _InkRippleFactory();
 
   /// Begin a ripple, centered at [position] relative to [referenceBox].
   ///
@@ -112,7 +112,7 @@ class InkRipple extends InteractiveInkFeature {
     @required RenderBox referenceBox,
     @required Offset position,
     @required Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,

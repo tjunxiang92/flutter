@@ -18,14 +18,14 @@ import 'scrollbar.dart';
 import 'shadows.dart';
 import 'theme.dart';
 
-const Duration _kDropdownMenuDuration = const Duration(milliseconds: 300);
+const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = 48.0;
 const double _kDenseButtonHeight = 24.0;
-const EdgeInsets _kMenuItemPadding = const EdgeInsets.symmetric(horizontal: 16.0);
-const EdgeInsetsGeometry _kAlignedButtonPadding = const EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
+const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
+const EdgeInsetsGeometry _kAlignedButtonPadding = EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
 const EdgeInsets _kAlignedMenuMargin = EdgeInsets.zero;
-const EdgeInsetsGeometry _kUnalignedMenuMargin = const EdgeInsetsDirectional.only(start: 16.0, end: 24.0);
+const EdgeInsetsGeometry _kUnalignedMenuMargin = EdgeInsetsDirectional.only(start: 16.0, end: 24.0);
 
 class _DropdownMenuPainter extends CustomPainter {
   _DropdownMenuPainter({
@@ -288,7 +288,7 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
     this.padding,
     this.buttonRect,
     this.selectedIndex,
-    this.elevation: 8,
+    this.elevation = 8,
     this.theme,
     @required this.style,
     this.barrierLabel,
@@ -473,10 +473,10 @@ class DropdownButton<T> extends StatefulWidget {
     this.value,
     this.hint,
     @required this.onChanged,
-    this.elevation: 8,
+    this.elevation = 8,
     this.style,
-    this.iconSize: 24.0,
-    this.isDense: false,
+    this.iconSize = 24.0,
+    this.isDense = false,
   }) : assert(items != null),
        assert(value == null || items.where((DropdownMenuItem<T> item) => item.value == value).length == 1),
       super(key: key);
@@ -673,7 +673,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
             child: new Container(
               height: 1.0,
               decoration: const BoxDecoration(
-                border: const Border(bottom: const BorderSide(color: const Color(0xFFBDBDBD), width: 0.0))
+                border: Border(bottom: BorderSide(color: Color(0xFFBDBDBD), width: 0.0))
               ),
             ),
           ),

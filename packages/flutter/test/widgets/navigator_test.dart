@@ -176,7 +176,7 @@ void main() {
   });
 
   testWidgets('Navigator.of fails gracefully when not found in context', (WidgetTester tester) async {
-    const Key targetKey = const Key('foo');
+    const Key targetKey = Key('foo');
     dynamic exception;
     final Widget widget = new ThirdWidget(
       targetKey: targetKey,
@@ -186,7 +186,7 @@ void main() {
     );
     await tester.pumpWidget(widget);
     await tester.tap(find.byKey(targetKey));
-    expect(exception, const isInstanceOf<FlutterError>());
+    expect(exception, isInstanceOf<FlutterError>());
     expect('$exception', startsWith('Navigator operation requested with a context'));
   });
 
@@ -197,7 +197,7 @@ void main() {
           children: <Widget>[
             const SizedBox(
               height: 300.0,
-              child: const Text('Root page'),
+              child: Text('Root page'),
             ),
             new SizedBox(
               height: 300.0,
@@ -789,7 +789,10 @@ void main() {
     ));
     expect(semantics, includesNodeWith(
       label: 'Page 1',
-      flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+      flags: <SemanticsFlag>[
+        SemanticsFlag.namesRoute,
+        SemanticsFlag.isHeader,
+      ],
     ));
 
     await tester.tap(find.text('1')); // pushNamed('/A')
@@ -801,7 +804,10 @@ void main() {
     ));
     expect(semantics, includesNodeWith(
       label: 'Page 2',
-      flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+      flags: <SemanticsFlag>[
+        SemanticsFlag.namesRoute,
+        SemanticsFlag.isHeader,
+      ],
     ));
 
     await tester.tap(find.text('2')); // pushNamed('/B/C')
@@ -809,11 +815,16 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     expect(semantics, includesNodeWith(
-      flags: <SemanticsFlag>[SemanticsFlag.scopesRoute],
+      flags: <SemanticsFlag>[
+        SemanticsFlag.scopesRoute,
+      ],
     ));
     expect(semantics, includesNodeWith(
       label: 'Page 3',
-      flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+      flags: <SemanticsFlag>[
+        SemanticsFlag.namesRoute,
+        SemanticsFlag.isHeader,
+      ],
     ));
 
 

@@ -18,74 +18,78 @@ class Category {
   String toString() => '$runtimeType("$title")';
 }
 
-const List<Category> allCategories = const <Category>[
-  const Category(
+const List<Category> allCategories = <Category>[
+  Category(
+    title: 'Accessories',
+    assets: <String>[
+      'products/belt.png',
+      'products/earrings.png',
+      'products/backpack.png',
+      'products/hat.png',
+      'products/scarf.png',
+      'products/sunnies.png',
+    ],
+  ),
+  Category(
+    title: 'Blue',
+    assets: <String>[
+      'products/backpack.png',
+      'products/cup.png',
+      'products/napkins.png',
+      'products/top.png',
+    ],
+  ),
+  Category(
+    title: 'Cold Weather',
+    assets: <String>[
+      'products/jacket.png',
+      'products/jumper.png',
+      'products/scarf.png',
+      'products/sweater.png',
+      'products/sweats.png',
+    ],
+  ),
+  Category(
     title: 'Home',
-    assets: const <String>[
-      'shrine/products/clock.png',
-      'shrine/products/teapot.png',
-      'shrine/products/radio.png',
-      'shrine/products/lawn_chair.png',
-      'shrine/products/chair.png',
+    assets: <String>[
+      'products/cup.png',
+      'products/napkins.png',
+      'products/planters.png',
+      'products/table.png',
+      'products/teaset.png',
     ],
   ),
-  const Category(
-    title: 'Red',
-    assets: const <String>[
-      'shrine/products/popsicle.png',
-      'shrine/products/brush.png',
-      'shrine/products/lipstick.png',
-      'shrine/products/backpack.png',
+  Category(
+    title: 'Tops',
+    assets: <String>[
+      'products/jumper.png',
+      'products/shirt.png',
+      'products/sweater.png',
+      'products/top.png',
     ],
   ),
-  const Category(
-    title: 'Sport',
-    assets: const <String>[
-      'shrine/products/helmet.png',
-      'shrine/products/beachball.png',
-      'shrine/products/flippers.png',
-      'shrine/products/surfboard.png',
-    ],
-  ),
-  const Category(
-    title: 'Shoes',
-    assets: const <String>[
-      'shrine/products/chucks.png',
-      'shrine/products/green-shoes.png',
-      'shrine/products/heels.png',
-      'shrine/products/flippers.png',
-    ],
-  ),
-  const Category(
-    title: 'Vision',
-    assets: const <String>[
-      'shrine/products/sunnies.png',
-      'shrine/products/binoculars.png',
-      'shrine/products/fish_bowl.png',
-    ],
-  ),
-  const Category(
+  Category(
     title: 'Everything',
-    assets: const <String>[
-      'shrine/products/radio.png',
-      'shrine/products/sunnies.png',
-      'shrine/products/clock.png',
-      'shrine/products/popsicle.png',
-      'shrine/products/lawn_chair.png',
-      'shrine/products/chair.png',
-      'shrine/products/heels.png',
-      'shrine/products/green-shoes.png',
-      'shrine/products/teapot.png',
-      'shrine/products/chucks.png',
-      'shrine/products/brush.png',
-      'shrine/products/fish_bowl.png',
-      'shrine/products/lipstick.png',
-      'shrine/products/backpack.png',
-      'shrine/products/helmet.png',
-      'shrine/products/beachball.png',
-      'shrine/products/binoculars.png',
-      'shrine/products/flippers.png',
-      'shrine/products/surfboard.png',
+    assets: <String>[
+      'products/backpack.png',
+      'products/belt.png',
+      'products/cup.png',
+      'products/dress.png',
+      'products/earrings.png',
+      'products/flatwear.png',
+      'products/hat.png',
+      'products/jacket.png',
+      'products/jumper.png',
+      'products/napkins.png',
+      'products/planters.png',
+      'products/scarf.png',
+      'products/shirt.png',
+      'products/sunnies.png',
+      'products/sweater.png',
+      'products/sweats.png',
+      'products/table.png',
+      'products/teaset.png',
+      'products/top.png',
     ],
   ),
 ];
@@ -163,8 +167,8 @@ class BackdropPanel extends StatelessWidget {
     return new Material(
       elevation: 2.0,
       borderRadius: const BorderRadius.only(
-        topLeft: const Radius.circular(16.0),
-        topRight: const Radius.circular(16.0),
+        topLeft: Radius.circular(16.0),
+        topRight: Radius.circular(16.0),
       ),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -334,7 +338,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
       final bool selected = category == _category;
       return new Material(
         shape: const RoundedRectangleBorder(
-          borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         color: selected
           ? Colors.white.withOpacity(0.25)

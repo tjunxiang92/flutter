@@ -61,7 +61,7 @@ void main() {
       });
       expect(response['id'], isNull);
       expect(response['event'], 'daemon.logMessage');
-      final Map<String, String> logMessage = response['params'];
+      final Map<String, String> logMessage = response['params'].cast<String, String>();
       expect(logMessage['level'], 'error');
       expect(logMessage['message'], 'daemon.logMessage test');
       responses.close();
@@ -110,27 +110,6 @@ void main() {
       });
     });
 
-    testUsingContext('app.start without a deviceId should report an error', () async {
-      final DaemonCommand command = new DaemonCommand();
-      applyMocksToCommand(command);
-
-      final StreamController<Map<String, dynamic>> commands = new StreamController<Map<String, dynamic>>();
-      final StreamController<Map<String, dynamic>> responses = new StreamController<Map<String, dynamic>>();
-      daemon = new Daemon(
-        commands.stream,
-        responses.add,
-        daemonCommand: command,
-        notifyingLogger: notifyingLogger
-      );
-
-      commands.add(<String, dynamic>{ 'id': 0, 'method': 'app.start' });
-      final Map<String, dynamic> response = await responses.stream.firstWhere(_notEvent);
-      expect(response['id'], 0);
-      expect(response['error'], contains('deviceId is required'));
-      responses.close();
-      commands.close();
-    });
-
     testUsingContext('app.restart without an appId should report an error', () async {
       final DaemonCommand command = new DaemonCommand();
       applyMocksToCommand(command);
@@ -141,7 +120,7 @@ void main() {
         commands.stream,
         responses.add,
         daemonCommand: command,
-        notifyingLogger: notifyingLogger
+        notifyingLogger: notifyingLogger,
       );
 
       commands.add(<String, dynamic>{ 'id': 0, 'method': 'app.restart' });
@@ -162,7 +141,7 @@ void main() {
           commands.stream,
           responses.add,
           daemonCommand: command,
-          notifyingLogger: notifyingLogger
+          notifyingLogger: notifyingLogger,
       );
 
       commands.add(<String, dynamic>{
@@ -189,7 +168,7 @@ void main() {
         commands.stream,
         responses.add,
         daemonCommand: command,
-        notifyingLogger: notifyingLogger
+        notifyingLogger: notifyingLogger,
       );
 
       commands.add(<String, dynamic>{ 'id': 0, 'method': 'app.stop' });
@@ -326,14 +305,14 @@ bool _notEvent(Map<String, dynamic> map) => map['event'] == null;
 bool _isConnectedEvent(Map<String, dynamic> map) => map['event'] == 'daemon.connected';
 
 class MockAndroidWorkflow extends AndroidWorkflow {
-  MockAndroidWorkflow({ this.canListDevices: true });
+  MockAndroidWorkflow({ this.canListDevices = true });
 
   @override
   final bool canListDevices;
 }
 
 class MockIOSWorkflow extends IOSWorkflow {
-  MockIOSWorkflow({ this.canListDevices:true });
+  MockIOSWorkflow({ this.canListDevices =true });
 
   @override
   final bool canListDevices;

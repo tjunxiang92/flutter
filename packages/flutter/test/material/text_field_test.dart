@@ -61,7 +61,7 @@ Widget overlay({ Widget child }) {
     child: new Directionality(
       textDirection: TextDirection.ltr,
       child: new MediaQuery(
-        data: const MediaQueryData(size: const Size(800.0, 600.0)),
+        data: const MediaQueryData(size: Size(800.0, 600.0)),
         child: new Overlay(
           initialEntries: <OverlayEntry>[
             new OverlayEntry(
@@ -88,7 +88,7 @@ Widget boilerplate({ Widget child }) {
     child: new Directionality(
       textDirection: TextDirection.ltr,
       child: new MediaQuery(
-        data: const MediaQueryData(size: const Size(800.0, 600.0)),
+        data: const MediaQueryData(size: Size(800.0, 600.0)),
         child: new Center(
           child: new Material(
             child: child,
@@ -105,12 +105,12 @@ Future<Null> skipPastScrollingAnimation(WidgetTester tester) async {
 }
 
 double getOpacity(WidgetTester tester, Finder finder) {
-  return tester.widget<Opacity>(
+  return tester.widget<FadeTransition>(
     find.ancestor(
       of: finder,
-      matching: find.byType(Opacity),
+      matching: find.byType(FadeTransition),
     )
-  ).opacity;
+  ).opacity.value;
 }
 
 void main() {
@@ -168,6 +168,26 @@ void main() {
     debugResetSemanticsIdCounter();
   });
 
+  testWidgets('TextField passes onEditingComplete to EditableText', (WidgetTester tester) async {
+    final VoidCallback onEditingComplete = () {};
+
+    await tester.pumpWidget(
+      new MaterialApp(
+        home: new Material(
+          child: new TextField(
+            onEditingComplete: onEditingComplete,
+          ),
+        ),
+      ),
+    );
+
+    final Finder editableTextFinder = find.byType(EditableText);
+    expect(editableTextFinder, findsOneWidget);
+
+    final EditableText editableTextWidget = tester.widget(editableTextFinder);
+    expect(editableTextWidget.onEditingComplete, onEditingComplete);
+  });
+
   testWidgets('TextField has consistent size', (WidgetTester tester) async {
     final Key textFieldKey = new UniqueKey();
     String textFieldValue;
@@ -214,7 +234,7 @@ void main() {
     await tester.pumpWidget(
       overlay(
         child: const TextField(
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Placeholder',
           ),
         ),
@@ -245,17 +265,83 @@ void main() {
     // Try the test again with a nonempty EditableText.
     tester.testTextInput.updateEditingValue(const TextEditingValue(
       text: 'X',
-      selection: const TextSelection.collapsed(offset: 1),
+      selection: TextSelection.collapsed(offset: 1),
     ));
     await checkCursorToggle();
   });
+
+  testWidgets('cursor has expected defaults', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        overlay(
+          child: const TextField(
+          ),
+        )
+    );
+
+    final TextField textField = tester.firstWidget(find.byType(TextField));
+    expect(textField.cursorWidth, 2.0);
+    expect(textField.cursorRadius, null);
+  });
+
+  testWidgets('cursor has expected radius value', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        overlay(
+          child: const TextField(
+            cursorRadius: Radius.circular(3.0),
+          ),
+        )
+    );
+
+    final TextField textField = tester.firstWidget(find.byType(TextField));
+    expect(textField.cursorWidth, 2.0);
+    expect(textField.cursorRadius, const Radius.circular(3.0));
+  });
+
+  testWidgets('cursor layout has correct width', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        overlay(
+          child: const RepaintBoundary(
+            child: TextField(
+              cursorWidth: 15.0,
+            ),
+          ),
+        )
+    );
+    await tester.enterText(find.byType(TextField), ' ');
+    await skipPastScrollingAnimation(tester);
+
+    await expectLater(
+      find.byType(TextField),
+      matchesGoldenFile('text_field_test.0.0.png'),
+    );
+  }, skip: !Platform.isLinux);
+
+  testWidgets('cursor layout has correct radius', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        overlay(
+          child: const RepaintBoundary(
+            child: TextField(
+              cursorWidth: 15.0,
+              cursorRadius: Radius.circular(3.0),
+            ),
+          ),
+        )
+    );
+    await tester.enterText(find.byType(TextField), ' ');
+    await skipPastScrollingAnimation(tester);
+
+    await expectLater(
+      find.byType(TextField),
+      matchesGoldenFile('text_field_test.1.0.png'),
+    );
+  }, skip: !Platform.isLinux);
 
   testWidgets('obscureText control test', (WidgetTester tester) async {
     await tester.pumpWidget(
       overlay(
         child: const TextField(
           obscureText: true,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Placeholder',
           ),
         ),
@@ -266,7 +352,7 @@ void main() {
     const String testValue = 'ABC';
     tester.testTextInput.updateEditingValue(const TextEditingValue(
       text: testValue,
-      selection: const TextSelection.collapsed(offset: testValue.length),
+      selection: TextSelection.collapsed(offset: testValue.length),
     ));
 
     await tester.pump();
@@ -276,7 +362,7 @@ void main() {
     const String newChar = 'X';
     tester.testTextInput.updateEditingValue(const TextEditingValue(
       text: testValue + newChar,
-      selection: const TextSelection.collapsed(offset: testValue.length + 1),
+      selection: TextSelection.collapsed(offset: testValue.length + 1),
     ));
 
     await tester.pump();
@@ -801,7 +887,7 @@ void main() {
     await tester.pumpWidget(
       overlay(
         child: const TextField(
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             errorText: 'error text',
             helperText: 'helper text',
           ),
@@ -819,7 +905,7 @@ void main() {
         child: new Theme(
           data: themeData,
           child: const TextField(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               helperText: 'helper text',
             ),
           ),
@@ -954,7 +1040,7 @@ void main() {
         child: new Column(
           children: <Widget>[
             const TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'First',
               ),
             ),
@@ -1003,7 +1089,7 @@ void main() {
         child: new Column(
           children: <Widget>[
             const TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'First',
               ),
             ),
@@ -1067,7 +1153,7 @@ void main() {
         child: new Column(
           children: <Widget>[
             const TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'First',
               ),
             ),
@@ -1122,7 +1208,7 @@ void main() {
         child: new Column(
           children: <Widget>[
             const TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'First',
               ),
             ),
@@ -1159,8 +1245,8 @@ void main() {
     await tester.pumpWidget(
       overlay(
         child: const TextField(
-          decoration: const InputDecoration(
-            icon: const Icon(Icons.phone),
+          decoration: InputDecoration(
+            icon: Icon(Icons.phone),
             labelText: 'label',
             filled: true,
           ),
@@ -1180,7 +1266,7 @@ void main() {
     await tester.pumpWidget(
       overlay(
         child: const TextField(
-          decoration: const InputDecoration.collapsed(
+          decoration: InputDecoration.collapsed(
             hintText: 'hint',
           ),
         ),
@@ -1208,7 +1294,7 @@ void main() {
       editable.getLocalRectForCaret(const TextPosition(offset: 0)).topLeft,
     );
 
-    expect(topLeft.dx, equals(399.0));
+    expect(topLeft.dx, equals(398.5));
 
     await tester.enterText(find.byType(TextField), 'abcd');
     await tester.pump();
@@ -1217,7 +1303,7 @@ void main() {
       editable.getLocalRectForCaret(const TextPosition(offset: 2)).topLeft,
     );
 
-    expect(topLeft.dx, equals(399.0));
+    expect(topLeft.dx, equals(398.5));
   });
 
   testWidgets('Can align to center within center', (WidgetTester tester) async {
@@ -1226,7 +1312,7 @@ void main() {
         child: new Container(
           width: 300.0,
           child: const Center(
-            child: const TextField(
+            child: TextField(
               textAlign: TextAlign.center,
               decoration: null,
             ),
@@ -1240,7 +1326,7 @@ void main() {
       editable.getLocalRectForCaret(const TextPosition(offset: 0)).topLeft,
     );
 
-    expect(topLeft.dx, equals(399.0));
+    expect(topLeft.dx, equals(398.5));
 
     await tester.enterText(find.byType(TextField), 'abcd');
     await tester.pump();
@@ -1249,7 +1335,7 @@ void main() {
       editable.getLocalRectForCaret(const TextPosition(offset: 2)).topLeft,
     );
 
-    expect(topLeft.dx, equals(399.0));
+    expect(topLeft.dx, equals(398.5));
   });
 
   testWidgets('Controller can update server', (WidgetTester tester) async {
@@ -1605,7 +1691,7 @@ void main() {
 
   testWidgets('maxLength shows warning when maxLengthEnforced is false.', (WidgetTester tester) async {
     final TextEditingController textController = new TextEditingController();
-    const TextStyle testStyle = const TextStyle(color: Colors.deepPurpleAccent);
+    const TextStyle testStyle = TextStyle(color: Colors.deepPurpleAccent);
 
     await tester.pumpWidget(boilerplate(
       child: new TextField(
@@ -1620,26 +1706,26 @@ void main() {
     await tester.pump();
 
     expect(textController.text, '0123456789101112');
-    expect(find.text('16 / 10'), findsOneWidget);
-    Text counterTextWidget = tester.widget(find.text('16 / 10'));
+    expect(find.text('16/10'), findsOneWidget);
+    Text counterTextWidget = tester.widget(find.text('16/10'));
     expect(counterTextWidget.style.color, equals(Colors.deepPurpleAccent));
 
     await tester.enterText(find.byType(TextField), '0123456789');
     await tester.pump();
 
     expect(textController.text, '0123456789');
-    expect(find.text('10 / 10'), findsOneWidget);
-    counterTextWidget = tester.widget(find.text('10 / 10'));
+    expect(find.text('10/10'), findsOneWidget);
+    counterTextWidget = tester.widget(find.text('10/10'));
     expect(counterTextWidget.style.color, isNot(equals(Colors.deepPurpleAccent)));
   });
 
   testWidgets('setting maxLength shows counter', (WidgetTester tester) async {
     await tester.pumpWidget(new MaterialApp(
       home: const Material(
-        child: const DefaultTextStyle(
-          style: const TextStyle(fontFamily: 'Ahem', fontSize: 10.0),
-          child: const Center(
-            child: const TextField(
+        child: DefaultTextStyle(
+          style: TextStyle(fontFamily: 'Ahem', fontSize: 10.0),
+          child: Center(
+            child: TextField(
               maxLength: 10,
             ),
           ),
@@ -1647,12 +1733,12 @@ void main() {
       ),
     ));
 
-    expect(find.text('0 / 10'), findsOneWidget);
+    expect(find.text('0/10'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), '01234');
     await tester.pump();
 
-    expect(find.text('5 / 10'), findsOneWidget);
+    expect(find.text('5/10'), findsOneWidget);
   });
 
   testWidgets('TextField identifies as text field in semantics', (WidgetTester tester) async {
@@ -1661,10 +1747,10 @@ void main() {
     await tester.pumpWidget(
       new MaterialApp(
         home: const Material(
-          child: const DefaultTextStyle(
-            style: const TextStyle(fontFamily: 'Ahem', fontSize: 10.0),
-            child: const Center(
-              child: const TextField(
+          child: DefaultTextStyle(
+            style: TextStyle(fontFamily: 'Ahem', fontSize: 10.0),
+            child: Center(
+              child: TextField(
                 maxLength: 10,
               ),
             ),
@@ -1726,7 +1812,7 @@ void main() {
             ),
             const Text(
               'abc',
-              style: const TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 20.0),
             ),
             new Expanded(
               child: new TextField(
@@ -2130,12 +2216,38 @@ void main() {
   });
 
   testWidgets('TextField throws when not descended from a Material widget', (WidgetTester tester) async {
-    const Widget textField = const TextField();
+    const Widget textField = TextField();
     await tester.pumpWidget(textField);
     final dynamic exception = tester.takeException();
     expect(exception, isFlutterError);
     expect(exception.toString(), startsWith('No Material widget found.'));
     expect(exception.toString(), endsWith(':\n  $textField\nThe ancestors of this widget were:\n  [root]'));
+  });
+
+  testWidgets('TextField loses focus when disabled', (WidgetTester tester) async {
+    final FocusNode focusNode = new FocusNode();
+
+    await tester.pumpWidget(
+      boilerplate(
+        child: new TextField(
+          focusNode: focusNode,
+          autofocus: true,
+          enabled: true,
+        ),
+      ),
+    );
+    expect(focusNode.hasFocus, isTrue);
+
+    await tester.pumpWidget(
+      boilerplate(
+        child: new TextField(
+          focusNode: focusNode,
+          autofocus: true,
+          enabled: false,
+        ),
+      ),
+    );
+    expect(focusNode.hasFocus, isFalse);
   });
 
 }

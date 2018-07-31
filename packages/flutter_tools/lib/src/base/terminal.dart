@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show ascii;
+import 'dart:convert' show AsciiDecoder;
 
 import 'package:quiver/strings.dart';
 
@@ -33,7 +33,7 @@ class AnsiTerminal {
 
   /// Setting the line mode can throw for some terminals (with "Operation not
   /// supported on socket"), but the error can be safely ignored.
-  static const List<int> _lineModeIgnorableErrors = const <int>[
+  static const List<int> _lineModeIgnorableErrors = <int>[
     _EBADF,
     _ENXIO,
     _ENOTTY,
@@ -87,7 +87,7 @@ class AnsiTerminal {
   ///
   /// Useful when the console is in [singleCharMode].
   Stream<String> get onCharInput {
-    _broadcastStdInString ??= io.stdin.transform(ascii.decoder).asBroadcastStream();
+    _broadcastStdInString ??= io.stdin.transform(const AsciiDecoder(allowInvalid: true)).asBroadcastStream();
     return _broadcastStdInString;
   }
 
@@ -105,7 +105,7 @@ class AnsiTerminal {
     List<String> acceptedCharacters, {
     String prompt,
     int defaultChoiceIndex,
-    bool displayAcceptedCharacters: true,
+    bool displayAcceptedCharacters = true,
     Duration timeout,
   }) async {
     assert(acceptedCharacters != null);

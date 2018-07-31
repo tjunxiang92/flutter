@@ -8,9 +8,9 @@ import 'package:flutter/widgets.dart';
 
 void main() {
   testWidgets('toString control test', (WidgetTester tester) async {
-    const Widget widget = const FadeTransition(
+    const Widget widget = FadeTransition(
       opacity: kAlwaysCompleteAnimation,
-      child: const Text('Ready', textDirection: TextDirection.ltr),
+      child: Text('Ready', textDirection: TextDirection.ltr),
     );
     expect(widget.toString, isNot(throwsException));
   });
@@ -26,8 +26,8 @@ void main() {
         ),
         borderRadius: BorderRadius.zero,
         shape: BoxShape.rectangle,
-        boxShadow: const <BoxShadow> [const BoxShadow(
-          color: const Color(0x66000000),
+        boxShadow: const <BoxShadow> [BoxShadow(
+          color: Color(0x66000000),
           blurRadius: 10.0,
           spreadRadius: 4.0,
         )],
@@ -77,7 +77,7 @@ void main() {
         actualDecoration = actualBox.decoration;
 
         expect(actualDecoration.color, const Color(0xFF7F7F7F));
-        expect(actualDecoration.border, const isInstanceOf<Border>());
+        expect(actualDecoration.border, isInstanceOf<Border>());
         final Border border = actualDecoration.border;
         expect(border.left.width, 2.5);
         expect(border.left.style, BorderStyle.solid);
@@ -133,7 +133,7 @@ void main() {
       // Same as the test above but the values should be much closer to the
       // tween's end values given the easeOut curve.
       expect(actualDecoration.color, const Color(0xFF505050));
-      expect(actualDecoration.border, const isInstanceOf<Border>());
+      expect(actualDecoration.border, isInstanceOf<Border>());
       final Border border = actualDecoration.border;
       expect(border.left.width, closeTo(1.9, 0.1));
       expect(border.left.style, BorderStyle.solid);

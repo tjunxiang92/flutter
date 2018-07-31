@@ -43,11 +43,11 @@ class GlowingOverscrollIndicator extends StatefulWidget {
   /// [notificationPredicate] arguments must not be null.
   const GlowingOverscrollIndicator({
     Key key,
-    this.showLeading: true,
-    this.showTrailing: true,
+    this.showLeading = true,
+    this.showTrailing = true,
     @required this.axisDirection,
     @required this.color,
-    this.notificationPredicate: defaultScrollNotificationPredicate,
+    this.notificationPredicate = defaultScrollNotificationPredicate,
     this.child,
   }) : assert(showLeading != null),
        assert(showTrailing != null),
@@ -304,10 +304,10 @@ class _GlowController extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const Duration _recedeTime = const Duration(milliseconds: 600);
-  static const Duration _pullTime = const Duration(milliseconds: 167);
-  static const Duration _pullHoldTime = const Duration(milliseconds: 167);
-  static const Duration _pullDecayTime = const Duration(milliseconds: 2000);
+  static const Duration _recedeTime = Duration(milliseconds: 600);
+  static const Duration _pullTime = Duration(milliseconds: 167);
+  static const Duration _pullHoldTime = Duration(milliseconds: 167);
+  static const Duration _pullDecayTime = Duration(milliseconds: 2000);
   static final Duration _crossAxisHalfTime = new Duration(microseconds: (Duration.microsecondsPerSecond / 60.0).round());
 
   static const double _maxOpacity = 0.5;

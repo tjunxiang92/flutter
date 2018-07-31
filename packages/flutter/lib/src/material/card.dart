@@ -65,7 +65,7 @@ class Card extends StatelessWidget {
     this.color,
     this.elevation,
     this.shape,
-    this.margin: const EdgeInsets.all(4.0),
+    this.margin = const EdgeInsets.all(4.0),
     this.child,
   }) : super(key: key);
 
@@ -116,7 +116,7 @@ class Card extends StatelessWidget {
           color: color ?? Theme.of(context).cardColor,
           elevation: elevation ?? 1.0,
           shape: shape ?? const RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
           ),
           child: child,
         ),

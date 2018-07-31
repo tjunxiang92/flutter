@@ -29,7 +29,7 @@ class Cache {
     }
   }
 
-  static const List<String> _hostsBlockedInChina = const <String> [
+  static const List<String> _hostsBlockedInChina = <String> [
     'storage.googleapis.com',
   ];
 
@@ -74,7 +74,7 @@ class Cache {
     if (!_lockEnabled)
       return null;
     assert(_lock == null);
-    _lock = await fs.file(fs.path.join(flutterRoot, 'bin', 'cache', 'lockfile')).open(mode: FileMode.WRITE); // ignore: deprecated_member_use
+    _lock = await fs.file(fs.path.join(flutterRoot, 'bin', 'cache', 'lockfile')).open(mode: FileMode.write);
     bool locked = false;
     bool printed = false;
     while (!locked) {
@@ -167,6 +167,19 @@ class Cache {
 
   File getStampFileFor(String artifactName) {
     return fs.file(fs.path.join(getRoot().path, '$artifactName.stamp'));
+  }
+
+  /// Returns `true` if either [file] is older than the tools stamp or if
+  /// [file] doesn't exist.
+  bool fileOlderThanToolsStamp(File file) {
+    if (!file.existsSync()) {
+      return true;
+    }
+    final File flutterToolsStamp = getStampFileFor('flutter_tools');
+    return flutterToolsStamp.existsSync() &&
+        flutterToolsStamp
+            .lastModifiedSync()
+            .isAfter(file.lastModifiedSync());
   }
 
   bool isUpToDate() => _artifacts.every((CachedArtifact artifact) => artifact.isUpToDate());

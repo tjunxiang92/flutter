@@ -12,7 +12,7 @@ import '../widgets/semantics_tester.dart';
 import 'feedback_tester.dart';
 
 void main () {
-  const Duration kWaitDuration = const Duration(seconds: 1);
+  const Duration kWaitDuration = Duration(seconds: 1);
 
   FeedbackTester feedback;
 
@@ -205,8 +205,8 @@ void main () {
 class TestWidget extends StatelessWidget {
 
   const TestWidget({
-    this.tapHandler: nullHandler,
-    this.longPressHandler: nullHandler,
+    this.tapHandler = nullHandler,
+    this.longPressHandler = nullHandler,
   });
 
   final HandlerCreator tapHandler;

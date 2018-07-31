@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-const List<String> _defaultMaterials = const <String>[
+const List<String> _defaultMaterials = <String>[
   'poker',
   'tortilla',
   'fish and',
@@ -12,7 +12,7 @@ const List<String> _defaultMaterials = const <String>[
   'wood',
 ];
 
-const List<String> _defaultActions = const <String>[
+const List<String> _defaultActions = <String>[
   'flake',
   'cut',
   'fragment',
@@ -24,7 +24,7 @@ const List<String> _defaultActions = const <String>[
   'eat',
 ];
 
-const Map<String, String> _results = const <String, String>{
+const Map<String, String> _results = <String, String>{
   'flake': 'flaking',
   'cut': 'cutting',
   'fragment': 'fragmenting',
@@ -36,7 +36,7 @@ const Map<String, String> _results = const <String, String>{
   'eat': 'eating',
 };
 
-const List<String> _defaultTools = const <String>[
+const List<String> _defaultTools = <String>[
   'hammer',
   'chisel',
   'fryer',
@@ -44,12 +44,12 @@ const List<String> _defaultTools = const <String>[
   'customer',
 ];
 
-const Map<String, String> _avatars = const <String, String>{
-  'hammer': 'shrine/vendors/ali-connors.png',
-  'chisel': 'shrine/vendors/sandra-adams.jpg',
-  'fryer': 'shrine/vendors/zach.jpg',
-  'fabricator': 'shrine/vendors/peter-carlsson.png',
-  'customer': 'shrine/vendors/16c477b.jpg',
+const Map<String, String> _avatars = <String, String>{
+  'hammer': 'people/square/ali.png',
+  'chisel': 'people/square/sandra.png',
+  'fryer': 'people/square/trevor.png',
+  'fabricator': 'people/square/stella.png',
+  'customer': 'people/square/peter.png',
 };
 
 final Map<String, Set<String>> _toolActions = <String, Set<String>>{
@@ -167,7 +167,7 @@ class _ChipDemoState extends State<ChipDemo> {
   Color _nameToColor(String name) {
     assert(name.length > 1);
     final int hash = name.hashCode & 0xffff;
-    final double hue = 360.0 * hash / (1 << 15);
+    final double hue = (360.0 * hash / (1 << 15)) % 360.0;
     return new HSVColor.fromAHSV(1.0, hue, 0.4, 0.90).toColor();
   }
 

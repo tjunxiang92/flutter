@@ -47,7 +47,7 @@ void _tests() {
                 const SliverAppBar(
                   pinned: true,
                   expandedHeight: appBarExpandedHeight,
-                  title: const Text('Semantics Test with Slivers'),
+                  title: Text('Semantics Test with Slivers'),
                 ),
                 new SliverList(
                   delegate: new SliverChildListDelegate(listChildren),
@@ -79,7 +79,10 @@ void _tests() {
                         children: <TestSemantics>[
                           new TestSemantics(
                             id: 8,
-                            flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                            flags: <SemanticsFlag>[
+                              SemanticsFlag.namesRoute,
+                              SemanticsFlag.isHeader,
+                            ],
                             label: 'Semantics Test with Slivers',
                             textDirection: TextDirection.ltr,
                           ),
@@ -140,7 +143,10 @@ void _tests() {
                     children: <TestSemantics>[
                       new TestSemantics(
                         id: 8,
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'Semantics Test with Slivers',
                         textDirection: TextDirection.ltr,
                       ),
@@ -219,7 +225,10 @@ void _tests() {
                         children: <TestSemantics>[
                           new TestSemantics(
                             id: 8,
-                            flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                            flags: <SemanticsFlag>[
+                              SemanticsFlag.namesRoute,
+                              SemanticsFlag.isHeader,
+                            ],
                             label: 'Semantics Test with Slivers',
                             textDirection: TextDirection.ltr,
                           ),
@@ -434,7 +443,7 @@ void _tests() {
               const SliverAppBar(
                 pinned: true,
                 expandedHeight: 100.0,
-                title: const Text('AppBar'),
+                title: Text('AppBar'),
               ),
               new SliverList(
                 delegate: new SliverChildListDelegate(listChildren),
@@ -458,7 +467,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'AppBar',
                         textDirection: TextDirection.ltr,
                       ),
@@ -537,7 +549,7 @@ void _tests() {
               const SliverAppBar(
                 pinned: true,
                 expandedHeight: 100.0,
-                title: const Text('AppBar'),
+                title: Text('AppBar'),
               ),
             ]..addAll(slivers),
           ),
@@ -557,7 +569,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'AppBar',
                         textDirection: TextDirection.ltr,
                       ),
@@ -634,7 +649,7 @@ void _tests() {
               const SliverAppBar(
                 pinned: true,
                 expandedHeight: 100.0,
-                title: const Text('AppBar'),
+                title: Text('AppBar'),
               ),
               new SliverList(
                 delegate: new SliverChildListDelegate(listChildren),
@@ -693,7 +708,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'AppBar',
                         textDirection: TextDirection.ltr,
                       ),
@@ -738,7 +756,7 @@ void _tests() {
               const SliverAppBar(
                 pinned: true,
                 expandedHeight: 100.0,
-                title: const Text('AppBar'),
+                title: Text('AppBar'),
               ),
             ]..addAll(slivers),
           ),
@@ -791,7 +809,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'AppBar',
                         textDirection: TextDirection.ltr,
                       ),
@@ -847,8 +868,8 @@ void _tests() {
                   const SliverAppBar(
                     pinned: true,
                     expandedHeight: 100.0,
-                    flexibleSpace: const FlexibleSpaceBar(
-                      title: const Text('Backward app bar', textDirection: TextDirection.ltr),
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text('Backward app bar', textDirection: TextDirection.ltr),
                     ),
                   ),
                   new SliverAppBar(
@@ -856,7 +877,7 @@ void _tests() {
                     key: forwardAppBarKey,
                     expandedHeight: 100.0,
                     flexibleSpace: const FlexibleSpaceBar(
-                      title: const Text('Forward app bar', textDirection: TextDirection.ltr),
+                      title: Text('Forward app bar', textDirection: TextDirection.ltr),
                     ),
                   ),
                   new SliverList(
@@ -883,7 +904,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'Forward app bar',
                         textDirection: TextDirection.ltr,
                       ),
@@ -986,7 +1010,10 @@ void _tests() {
                     tags: <SemanticsTag>[RenderViewport.excludeFromScrolling],
                     children: <TestSemantics>[
                       new TestSemantics(
-                        flags: <SemanticsFlag>[SemanticsFlag.namesRoute],
+                        flags: <SemanticsFlag>[
+                          SemanticsFlag.namesRoute,
+                          SemanticsFlag.isHeader,
+                        ],
                         label: 'Backward app bar',
                         textDirection: TextDirection.ltr,
                       ),

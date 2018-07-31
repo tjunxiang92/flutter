@@ -57,13 +57,13 @@ enum TimelineStream {
   vm,
 }
 
-const List<TimelineStream> _defaultStreams = const <TimelineStream>[TimelineStream.all];
+const List<TimelineStream> _defaultStreams = <TimelineStream>[TimelineStream.all];
 
 /// Default timeout for short-running RPCs.
-const Duration _kShortTimeout = const Duration(seconds: 5);
+const Duration _kShortTimeout = Duration(seconds: 5);
 
 /// Default timeout for awaiting an Isolate to become runnable.
-const Duration _kIsolateLoadRunnableTimeout = const Duration(minutes: 1);
+const Duration _kIsolateLoadRunnableTimeout = Duration(minutes: 1);
 
 /// Default timeout for long-running RPCs.
 final Duration _kLongTimeout = _kShortTimeout * 6;
@@ -104,7 +104,7 @@ final Logger _log = new Logger('FlutterDriver');
 ///
 ///     driver.tap(find.text('Save'));
 ///     driver.scroll(find.byValueKey(42));
-const CommonFinders find = const CommonFinders._();
+const CommonFinders find = CommonFinders._();
 
 /// Computes a value.
 ///
@@ -122,8 +122,8 @@ class FlutterDriver {
     this._serviceClient,
     this._peer,
     this._appIsolate, {
-    bool printCommunication: false,
-    bool logCommunicationToFile: true,
+    bool printCommunication = false,
+    bool logCommunicationToFile = true,
   }) : _printCommunication = printCommunication,
        _logCommunicationToFile = logCommunicationToFile,
        _driverId = _nextDriverId++;
@@ -157,10 +157,10 @@ class FlutterDriver {
   /// service we will wait for the first isolate to become runnable.
   static Future<FlutterDriver> connect({
     String dartVmServiceUrl,
-    bool printCommunication: false,
-    bool logCommunicationToFile: true,
+    bool printCommunication = false,
+    bool logCommunicationToFile = true,
     int isolateNumber,
-    Duration isolateReadyTimeout: _kIsolateLoadRunnableTimeout,
+    Duration isolateReadyTimeout = _kIsolateLoadRunnableTimeout,
   }) async {
     dartVmServiceUrl ??= Platform.environment['VM_SERVICE_URL'];
 
@@ -373,7 +373,7 @@ class FlutterDriver {
     if (_logCommunicationToFile) {
       final f.File file = fs.file(p.join(testOutputsDirectory, 'flutter_driver_commands_$_driverId.log'));
       file.createSync(recursive: true); // no-op if file exists
-      file.writeAsStringSync('${new DateTime.now()} $message\n', mode: f.FileMode.APPEND, flush: true); // ignore: deprecated_member_use
+      file.writeAsStringSync('${new DateTime.now()} $message\n', mode: f.FileMode.append, flush: true);
     }
   }
 
@@ -427,7 +427,7 @@ class FlutterDriver {
   ///
   /// The move events are generated at a given [frequency] in Hz (or events per
   /// second). It defaults to 60Hz.
-  Future<Null> scroll(SerializableFinder finder, double dx, double dy, Duration duration, { int frequency: 60, Duration timeout }) async {
+  Future<Null> scroll(SerializableFinder finder, double dx, double dy, Duration duration, { int frequency = 60, Duration timeout }) async {
     return await _sendCommand(new Scroll(finder, dx, dy, duration, frequency, timeout: timeout)).then((Map<String, dynamic> _) => null);
   }
 
@@ -438,7 +438,7 @@ class FlutterDriver {
   /// that lazily creates its children, like [ListView] or [CustomScrollView],
   /// then this method may fail because [finder] doesn't actually exist.
   /// The [scrollUntilVisible] method can be used in this case.
-  Future<Null> scrollIntoView(SerializableFinder finder, { double alignment: 0.0, Duration timeout }) async {
+  Future<Null> scrollIntoView(SerializableFinder finder, { double alignment = 0.0, Duration timeout }) async {
     return await _sendCommand(new ScrollIntoView(finder, alignment: alignment, timeout: timeout)).then((Map<String, dynamic> _) => null);
   }
 
@@ -465,10 +465,10 @@ class FlutterDriver {
   /// The [timeout] value should be long enough to accommodate as many scrolls
   /// as needed to bring an item into view. The default is 10 seconds.
   Future<Null> scrollUntilVisible(SerializableFinder scrollable, SerializableFinder item, {
-    double alignment: 0.0,
-    double dxScroll: 0.0,
-    double dyScroll: 0.0,
-    Duration timeout: const Duration(seconds: 10),
+    double alignment = 0.0,
+    double dxScroll = 0.0,
+    double dyScroll = 0.0,
+    Duration timeout = const Duration(seconds: 10),
   }) async {
     assert(scrollable != null);
     assert(item != null);
@@ -534,6 +534,8 @@ class FlutterDriver {
     await _sendCommand(new EnterText(text, timeout: timeout));
   }
 
+  /// Configures text entry emulation.
+  ///
   /// If `enabled` is true, enables text entry emulation via [enterText]. If
   /// `enabled` is false, disables it. By default text entry emulation is
   /// enabled.
@@ -544,8 +546,7 @@ class FlutterDriver {
   ///
   /// When enabled, the operating system's configured keyboard will not be
   /// invoked when the widget is focused, as the [SystemChannels.textInput]
-  /// channel will be mocked out. In disabled mode [enterText] can be used to
-  /// emulate text entry.
+  /// channel will be mocked out.
   Future<Null> setTextEntryEmulation({ @required bool enabled, Duration timeout }) async {
     assert(enabled != null);
     await _sendCommand(new SetTextEntryEmulation(enabled, timeout: timeout));
@@ -565,9 +566,23 @@ class FlutterDriver {
   ///
   /// Returns true when the call actually changed the state from on to off or
   /// vice versa.
-  Future<bool> setSemantics(bool enabled, { Duration timeout: _kShortTimeout }) async {
+  Future<bool> setSemantics(bool enabled, { Duration timeout = _kShortTimeout }) async {
     final SetSemanticsResult result = SetSemanticsResult.fromJson(await _sendCommand(new SetSemantics(enabled, timeout: timeout)));
     return result.changedState;
+  }
+
+  /// Retrieves the semantics node id for the object returned by `finder`, or
+  /// the nearest ancestor with a semantics node.
+  ///
+  /// Throws an error if `finder` returns multiple elements or a semantics
+  /// node is not found.
+  ///
+  /// Semantics must be enabled to use this method, either using a platform
+  /// specific shell command or [setSemantics].
+  Future<int> getSemanticsId(SerializableFinder finder, { Duration timeout = _kShortTimeout}) async {
+    final Map<String, dynamic> jsonResponse = await _sendCommand(new GetSemanticsId(finder, timeout: timeout));
+    final GetSemanticsIdResult result = GetSemanticsIdResult.fromJson(jsonResponse);
+    return result.id;
   }
 
   /// Take a screenshot.  The image will be returned as a PNG.
@@ -632,15 +647,15 @@ class FlutterDriver {
   ///     ]
   ///
   /// [getFlagList]: https://github.com/dart-lang/sdk/blob/master/runtime/vm/service/service.md#getflaglist
-  Future<List<Map<String, dynamic>>> getVmFlags({ Duration timeout: _kShortTimeout }) async {
+  Future<List<Map<String, dynamic>>> getVmFlags({ Duration timeout = _kShortTimeout }) async {
     final Map<String, dynamic> result = await _peer.sendRequest('getFlagList').timeout(timeout);
     return result['flags'];
   }
 
   /// Starts recording performance traces.
   Future<Null> startTracing({
-    List<TimelineStream> streams: _defaultStreams,
-    Duration timeout: _kShortTimeout,
+    List<TimelineStream> streams = _defaultStreams,
+    Duration timeout = _kShortTimeout,
   }) async {
     assert(streams != null && streams.isNotEmpty);
     try {
@@ -658,7 +673,7 @@ class FlutterDriver {
   }
 
   /// Stops recording performance traces and downloads the timeline.
-  Future<Timeline> stopTracingAndDownloadTimeline({ Duration timeout: _kShortTimeout }) async {
+  Future<Timeline> stopTracingAndDownloadTimeline({ Duration timeout = _kShortTimeout }) async {
     try {
       await _peer
           .sendRequest(_setVMTimelineFlagsMethodName, <String, String>{'recordedStreams': '[]'})
@@ -689,8 +704,8 @@ class FlutterDriver {
   /// default, prior events are cleared.
   Future<Timeline> traceAction(
     Future<dynamic> action(), {
-    List<TimelineStream> streams: _defaultStreams,
-    bool retainPriorEvents: false,
+    List<TimelineStream> streams = _defaultStreams,
+    bool retainPriorEvents = false,
   }) async {
     if (!retainPriorEvents) {
       await clearTimeline();
@@ -701,7 +716,7 @@ class FlutterDriver {
   }
 
   /// Clears all timeline events recorded up until now.
-  Future<Null> clearTimeline({ Duration timeout: _kShortTimeout }) async {
+  Future<Null> clearTimeline({ Duration timeout = _kShortTimeout }) async {
     try {
       await _peer
           .sendRequest(_clearVMTimelineMethodName, <String, String>{})

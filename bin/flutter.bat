@@ -47,6 +47,18 @@ IF NOT EXIST "%flutter_root%\.git" (
 REM Ensure that bin/cache exists.
 IF NOT EXIST "%cache_dir%" MKDIR "%cache_dir%"
 
+REM If the cache still doesn't exist, fail with an error that we probably don't have permissions.
+IF NOT EXIST "%cache_dir%" (
+  ECHO Error: Unable to create cache directory at
+  ECHO            %cache_dir%
+  ECHO.
+  ECHO        This may be because flutter doesn't have write permissions for
+  ECHO        this path. Try moving the flutter directory to a writable location,
+  ECHO        such as within your home directory.
+  EXIT /B 1
+)
+
+
 REM To debug the tool, you can uncomment the following lines to enable checked mode and set an observatory port:
 REM SET FLUTTER_TOOL_ARGS="--checked %FLUTTER_TOOL_ARGS%"
 REM SET FLUTTER_TOOL_ARGS="%FLUTTER_TOOL_ARGS% --observe=65432"
@@ -101,11 +113,12 @@ GOTO :after_subroutine
   :do_snapshot
     IF EXIST "%FLUTTER_ROOT%\version" DEL "%FLUTTER_ROOT%\version"
     ECHO: > "%cache_dir%\.dartignore"
-    ECHO Updating flutter tool...
+    ECHO Building flutter tool...
     PUSHD "%flutter_tools_dir%"
 
     REM Makes changes to PUB_ENVIRONMENT only visible to commands within SETLOCAL/ENDLOCAL
     SETLOCAL
+      SET VERBOSITY=--verbosity=error
       IF "%TRAVIS%" == "true" GOTO on_bot
       IF "%BOT%" == "true" GOTO on_bot
       IF "%CONTINUOUS_INTEGRATION%" == "true" GOTO on_bot
@@ -115,13 +128,14 @@ GOTO :after_subroutine
       GOTO not_on_bot
       :on_bot
         SET PUB_ENVIRONMENT=%PUB_ENVIRONMENT%:flutter_bot
+        SET VERBOSITY=--verbosity=all
       :not_on_bot
       SET PUB_ENVIRONMENT=%PUB_ENVIRONMENT%:flutter_install
       IF "%PUB_CACHE%" == "" (
-       IF EXIST "%pub_cache_path%" SET PUB_CACHE=%pub_cache_path%
+        IF EXIST "%pub_cache_path%" SET PUB_CACHE=%pub_cache_path%
       )
       :retry_pub_upgrade
-      CALL "%pub%" upgrade --verbosity=error --no-packages-dir
+      CALL "%pub%" upgrade %VERBOSITY% --no-packages-dir
       IF "%ERRORLEVEL%" NEQ "0" (
         ECHO Error: Unable to 'pub upgrade' flutter tool. Retrying in five seconds...
         timeout /t 5 /nobreak

@@ -10,7 +10,7 @@ import 'gesture_detector.dart';
 import 'ticker_provider.dart';
 import 'transitions.dart';
 
-const Curve _kResizeTimeCurve = const Interval(0.4, 1.0, curve: Curves.ease);
+const Curve _kResizeTimeCurve = Interval(0.4, 1.0, curve: Curves.ease);
 const double _kMinFlingVelocity = 700.0;
 const double _kMinFlingVelocityDelta = 400.0;
 const double _kFlingVelocityScale = 1.0 / 300.0;
@@ -77,11 +77,11 @@ class Dismissible extends StatefulWidget {
     this.secondaryBackground,
     this.onResize,
     this.onDismissed,
-    this.direction: DismissDirection.horizontal,
-    this.resizeDuration: const Duration(milliseconds: 300),
-    this.dismissThresholds: const <DismissDirection, double>{},
-    this.movementDuration: const Duration(milliseconds: 200),
-    this.crossAxisEndOffset: 0.0,
+    this.direction = DismissDirection.horizontal,
+    this.resizeDuration = const Duration(milliseconds: 300),
+    this.dismissThresholds = const <DismissDirection, double>{},
+    this.movementDuration = const Duration(milliseconds: 200),
+    this.crossAxisEndOffset = 0.0,
   }) : assert(key != null),
        assert(secondaryBackground != null ? background != null : true),
        super(key: key);

@@ -28,11 +28,11 @@ class FlutterErrorDetails {
   const FlutterErrorDetails({
     this.exception,
     this.stack,
-    this.library: 'Flutter framework',
+    this.library = 'Flutter framework',
     this.context,
     this.stackFilter,
     this.informationCollector,
-    this.silent: false
+    this.silent = false
   });
 
   /// The exception. Often this will be an [AssertionError], maybe specifically
@@ -250,7 +250,7 @@ class FlutterError extends AssertionError {
   /// had not been called before (so the next message is verbose again).
   ///
   /// The default behavior for the [onError] handler is to call this function.
-  static void dumpErrorToConsole(FlutterErrorDetails details, { bool forceReport: false }) {
+  static void dumpErrorToConsole(FlutterErrorDetails details, { bool forceReport = false }) {
     assert(details != null);
     assert(details.exception != null);
     bool reportError = details.silent != true; // could be null
@@ -351,12 +351,12 @@ class FlutterError extends AssertionError {
   /// format but the frame numbers will not be consecutive (frames are elided)
   /// and the final line may be prose rather than a stack frame.
   static Iterable<String> defaultStackFilter(Iterable<String> frames) {
-    const List<String> filteredPackages = const <String>[
+    const List<String> filteredPackages = <String>[
       'dart:async-patch',
       'dart:async',
       'package:stack_trace',
     ];
-    const List<String> filteredClasses = const <String>[
+    const List<String> filteredClasses = <String>[
       '_AssertionError',
       '_FakeAsync',
       '_FrameCallbackEntry',

@@ -46,7 +46,7 @@ class FlutterGoldenFileComparator implements GoldenFileComparator {
   @visibleForTesting
   FlutterGoldenFileComparator(
     this.basedir, {
-    this.fs: const LocalFileSystem(),
+    this.fs = const LocalFileSystem(),
   });
 
   /// The directory to which golden file URIs will be resolved in [compare] and [update].
@@ -111,9 +111,9 @@ class FlutterGoldenFileComparator implements GoldenFileComparator {
 class GoldensClient {
   /// Create a handle to a local clone of the goldens repository.
   GoldensClient({
-    this.fs: const LocalFileSystem(),
-    this.platform: const LocalPlatform(),
-    this.process: const LocalProcessManager(),
+    this.fs = const LocalFileSystem(),
+    this.platform = const LocalPlatform(),
+    this.process = const LocalProcessManager(),
   });
 
   /// The file system to use for storing the local clone of the repository.
@@ -236,8 +236,8 @@ class GoldensClient {
   Future<void> _obtainLock() async {
     final File lockFile = flutterRoot.childFile(fs.path.join('bin', 'cache', 'goldens.lockfile'));
     await lockFile.create(recursive: true);
-    _lock = await lockFile.open(mode: io.FileMode.WRITE); // ignore: deprecated_member_use
-    await _lock.lock(io.FileLock.BLOCKING_EXCLUSIVE); // ignore: deprecated_member_use
+    _lock = await lockFile.open(mode: io.FileMode.write);
+    await _lock.lock(io.FileLock.blockingExclusive);
   }
 
   Future<void> _releaseLock() async {

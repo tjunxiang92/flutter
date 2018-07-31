@@ -71,25 +71,25 @@ abstract class ProgressIndicator extends StatefulWidget {
 class _LinearProgressIndicatorPainter extends CustomPainter {
   // The indeterminate progress animation displays two lines whose leading (head)
   // and trailing (tail) endpoints are defined by the following four curves.
-  static const Curve line1Head = const Interval(
+  static const Curve line1Head = Interval(
     0.0,
     750.0 / _kIndeterminateLinearDuration,
-    curve: const Cubic(0.2, 0.0, 0.8, 1.0),
+    curve: Cubic(0.2, 0.0, 0.8, 1.0),
   );
-  static const Curve line1Tail = const Interval(
+  static const Curve line1Tail = Interval(
     333.0 / _kIndeterminateLinearDuration,
     (333.0 + 750.0) / _kIndeterminateLinearDuration,
-    curve: const Cubic(0.4, 0.0, 1.0, 1.0),
+    curve: Cubic(0.4, 0.0, 1.0, 1.0),
   );
-  static const Curve line2Head = const Interval(
+  static const Curve line2Head = Interval(
     1000.0 / _kIndeterminateLinearDuration,
     (1000.0 + 567.0) / _kIndeterminateLinearDuration,
-    curve: const Cubic(0.0, 0.0, 0.65, 1.0),
+    curve: Cubic(0.0, 0.0, 0.65, 1.0),
   );
-  static const Curve line2Tail = const Interval(
+  static const Curve line2Tail = Interval(
     1267.0 / _kIndeterminateLinearDuration,
     (1267.0 + 533.0) / _kIndeterminateLinearDuration,
-    curve: const Cubic(0.10, 0.0, 0.45, 1.0),
+    curve: Cubic(0.10, 0.0, 0.45, 1.0),
   );
 
   const _LinearProgressIndicatorPainter({
@@ -340,7 +340,7 @@ class CircularProgressIndicator extends ProgressIndicator {
     double value,
     Color backgroundColor,
     Animation<Color> valueColor,
-    this.strokeWidth: 4.0,
+    this.strokeWidth = 4.0,
   }) : super(key: key, value: value, backgroundColor: backgroundColor, valueColor: valueColor);
 
   /// The width of the line used to draw the circle.
@@ -504,7 +504,7 @@ class RefreshProgressIndicator extends CircularProgressIndicator {
     double value,
     Color backgroundColor,
     Animation<Color> valueColor,
-    double strokeWidth: 2.0, // Different default than CircularProgressIndicator.
+    double strokeWidth = 2.0, // Different default than CircularProgressIndicator.
   }) : super(
     key: key,
     value: value,
@@ -528,8 +528,8 @@ class _RefreshProgressIndicatorState extends _CircularProgressIndicatorState {
   Widget build(BuildContext context) {
     if (widget.value != null)
       _controller.value = widget.value / 10.0;
-    else
-      _controller.forward();
+    else if (!_controller.isAnimating)
+      _controller.repeat();
     return _buildAnimation();
   }
 

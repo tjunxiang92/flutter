@@ -51,7 +51,7 @@ void debugPrintThrottled(String message, { int wrapWidth }) {
 }
 int _debugPrintedCharacters = 0;
 const int _kDebugPrintCapacity = 12 * 1024;
-const Duration _kDebugPrintPauseTime = const Duration(seconds: 1);
+const Duration _kDebugPrintPauseTime = Duration(seconds: 1);
 final Queue<String> _debugPrintBuffer = new Queue<String>();
 final Stopwatch _debugPrintStopwatch = new Stopwatch();
 Completer<Null> _debugPrintCompleter;
@@ -103,7 +103,7 @@ enum _WordWrapParseMode { inSpace, inWord, atBreak }
 /// and so forth. It is only intended for formatting error messages.
 ///
 /// The default [debugPrint] implementation uses this for its line wrapping.
-Iterable<String> debugWordWrap(String message, int width, { String wrapIndent: '' }) sync* {
+Iterable<String> debugWordWrap(String message, int width, { String wrapIndent = '' }) sync* {
   if (message.length < width || message.trimLeft()[0] == '#') {
     yield message;
     return;

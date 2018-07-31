@@ -10,8 +10,8 @@ import 'package:flutter/widgets.dart';
 import 'ink_well.dart';
 import 'material.dart';
 
-const Duration _kUnconfirmedSplashDuration = const Duration(seconds: 1);
-const Duration _kSplashFadeDuration = const Duration(milliseconds: 200);
+const Duration _kUnconfirmedSplashDuration = Duration(seconds: 1);
+const Duration _kSplashFadeDuration = Duration(milliseconds: 200);
 
 const double _kSplashInitialSize = 0.0; // logical pixels
 const double _kSplashConfirmedVelocity = 1.0; // logical pixels per millisecond
@@ -51,7 +51,7 @@ class _InkSplashFactory extends InteractiveInkFeatureFactory {
     @required RenderBox referenceBox,
     @required Offset position,
     @required Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,
@@ -94,7 +94,7 @@ class _InkSplashFactory extends InteractiveInkFeatureFactory {
 class InkSplash extends InteractiveInkFeature {
   /// Used to specify this type of ink splash for an [InkWell], [InkResponse]
   /// or material [Theme].
-  static const InteractiveInkFeatureFactory splashFactory = const _InkSplashFactory();
+  static const InteractiveInkFeatureFactory splashFactory = _InkSplashFactory();
 
   /// Begin a splash, centered at position relative to [referenceBox].
   ///
@@ -116,7 +116,7 @@ class InkSplash extends InteractiveInkFeature {
     @required RenderBox referenceBox,
     Offset position,
     Color color,
-    bool containedInkWell: false,
+    bool containedInkWell = false,
     RectCallback rectCallback,
     BorderRadius borderRadius,
     double radius,

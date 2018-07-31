@@ -12,8 +12,8 @@ import 'feedback.dart';
 import 'theme.dart';
 import 'theme_data.dart';
 
-const Duration _kFadeDuration = const Duration(milliseconds: 200);
-const Duration _kShowDuration = const Duration(milliseconds: 1500);
+const Duration _kFadeDuration = Duration(milliseconds: 200);
+const Duration _kShowDuration = Duration(milliseconds: 1500);
 
 /// A material design tooltip.
 ///
@@ -43,11 +43,11 @@ class Tooltip extends StatefulWidget {
   const Tooltip({
     Key key,
     @required this.message,
-    this.height: 32.0,
-    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    this.verticalOffset: 24.0,
-    this.preferBelow: true,
-    this.excludeFromSemantics: false,
+    this.height = 32.0,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.verticalOffset = 24.0,
+    this.preferBelow = true,
+    this.excludeFromSemantics = false,
     this.child,
   }) : assert(message != null),
        assert(height != null),

@@ -10,7 +10,7 @@ import 'list_tile.dart';
 import 'theme.dart';
 import 'theme_data.dart';
 
-const Duration _kExpand = const Duration(milliseconds: 200);
+const Duration _kExpand = Duration(milliseconds: 200);
 
 /// A single-line [ListTile] with a trailing button that expands or collapses
 /// the tile to reveal or hide the [children].
@@ -37,9 +37,9 @@ class ExpansionTile extends StatefulWidget {
     @required this.title,
     this.backgroundColor,
     this.onExpansionChanged,
-    this.children: const <Widget>[],
+    this.children = const <Widget>[],
     this.trailing,
-    this.initiallyExpanded: false,
+    this.initiallyExpanded = false,
   }) : assert(initiallyExpanded != null),
        super(key: key);
 

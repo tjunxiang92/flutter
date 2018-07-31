@@ -65,12 +65,12 @@ class PaginatedDataTable extends StatefulWidget {
     this.actions,
     @required this.columns,
     this.sortColumnIndex,
-    this.sortAscending: true,
+    this.sortAscending = true,
     this.onSelectAll,
-    this.initialFirstRowIndex: 0,
+    this.initialFirstRowIndex = 0,
     this.onPageChanged,
-    this.rowsPerPage: defaultRowsPerPage,
-    this.availableRowsPerPage: const <int>[defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 5, defaultRowsPerPage * 10],
+    this.rowsPerPage = defaultRowsPerPage,
+    this.availableRowsPerPage = const <int>[defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 5, defaultRowsPerPage * 10],
     this.onRowsPerPageChanged,
     @required this.source
   }) : assert(header != null),
@@ -239,13 +239,13 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
     final List<DataCell> cells = widget.columns.map<DataCell>((DataColumn column) {
       if (!column.numeric) {
         haveProgressIndicator = true;
-        return const DataCell(const CircularProgressIndicator());
+        return const DataCell(CircularProgressIndicator());
       }
       return DataCell.empty;
     }).toList();
     if (!haveProgressIndicator) {
       haveProgressIndicator = true;
-      cells[0] = const DataCell(const CircularProgressIndicator());
+      cells[0] = const DataCell(CircularProgressIndicator());
     }
     return new DataRow.byIndex(
       index: index,

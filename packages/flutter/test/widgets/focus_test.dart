@@ -10,7 +10,7 @@ class TestFocusable extends StatefulWidget {
     Key key,
     this.no,
     this.yes,
-    this.autofocus: true,
+    this.autofocus = true,
   }) : super(key: key);
 
   final String no;
@@ -59,11 +59,11 @@ void main() {
     await tester.pumpWidget(
       new Column(
         children: const <Widget>[
-          const TestFocusable(
+          TestFocusable(
             no: 'a',
             yes: 'A FOCUSED',
           ),
-          const TestFocusable(
+          TestFocusable(
             no: 'b',
             yes: 'B FOCUSED',
           ),
@@ -147,7 +147,7 @@ void main() {
         child: new Row(
           textDirection: TextDirection.ltr,
           children: const <Widget>[
-            const TestFocusable(
+            TestFocusable(
               no: 'a',
               yes: 'A FOCUSED',
               autofocus: false,
@@ -222,7 +222,7 @@ void main() {
         child: new Row(
           textDirection: TextDirection.ltr,
           children: const <Widget>[
-            const TestFocusable(
+            TestFocusable(
               no: 'a',
               yes: 'A FOCUSED',
               autofocus: false,

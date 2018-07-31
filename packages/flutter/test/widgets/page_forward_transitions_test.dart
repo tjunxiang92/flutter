@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter_test/flutter_test.dart' hide TypeMatcher;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -50,14 +50,14 @@ class TestRoute<T> extends PageRoute<T> {
 }
 
 void main() {
-  const Duration kTwoTenthsOfTheTransitionDuration = const Duration(milliseconds: 30);
-  const Duration kFourTenthsOfTheTransitionDuration = const Duration(milliseconds: 60);
+  const Duration kTwoTenthsOfTheTransitionDuration = Duration(milliseconds: 30);
+  const Duration kFourTenthsOfTheTransitionDuration = Duration(milliseconds: 60);
 
   testWidgets('Check onstage/offstage handling around transitions', (WidgetTester tester) async {
 
     final GlobalKey insideKey = new GlobalKey();
 
-    String state({ bool skipOffstage: true }) {
+    String state({ bool skipOffstage = true }) {
       String result = '';
       if (tester.any(find.text('A', skipOffstage: skipOffstage)))
         result += 'A';

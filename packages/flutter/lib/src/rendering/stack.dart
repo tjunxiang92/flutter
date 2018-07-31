@@ -55,7 +55,7 @@ class RelativeRect {
   }
 
   /// A rect that covers the entire container.
-  static const RelativeRect fill = const RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0);
+  static const RelativeRect fill = RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0);
 
   /// Distance from the left side of the container to the left side of this rectangle.
   ///
@@ -340,10 +340,10 @@ class RenderStack extends RenderBox
   /// top left corners.
   RenderStack({
     List<RenderBox> children,
-    AlignmentGeometry alignment: AlignmentDirectional.topStart,
+    AlignmentGeometry alignment = AlignmentDirectional.topStart,
     TextDirection textDirection,
-    StackFit fit: StackFit.loose,
-    Overflow overflow: Overflow.clip,
+    StackFit fit = StackFit.loose,
+    Overflow overflow = Overflow.clip,
   }) : assert(alignment != null),
        assert(fit != null),
        assert(overflow != null),
@@ -637,9 +637,9 @@ class RenderIndexedStack extends RenderStack {
   /// If the [index] parameter is null, nothing is displayed.
   RenderIndexedStack({
     List<RenderBox> children,
-    AlignmentGeometry alignment: AlignmentDirectional.topStart,
+    AlignmentGeometry alignment = AlignmentDirectional.topStart,
     TextDirection textDirection,
-    int index: 0,
+    int index = 0,
   }) : _index = index, super(
     children: children,
     alignment: alignment,

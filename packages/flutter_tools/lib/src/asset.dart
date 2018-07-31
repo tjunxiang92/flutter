@@ -10,6 +10,7 @@ import 'package:yaml/yaml.dart';
 import 'base/context.dart';
 import 'base/file_system.dart';
 import 'base/platform.dart';
+import 'base/utils.dart';
 import 'build_info.dart';
 import 'cache.dart';
 import 'dart/package_map.dart';
@@ -17,7 +18,7 @@ import 'devfs.dart';
 import 'flutter_manifest.dart';
 import 'globals.dart';
 
-const AssetBundleFactory _kManifestFactory = const _ManifestAssetBundleFactory();
+const AssetBundleFactory _kManifestFactory = _ManifestAssetBundleFactory();
 
 /// Injected factory class for spawning [AssetBundle] instances.
 abstract class AssetBundleFactory {
@@ -35,15 +36,15 @@ abstract class AssetBundle {
 
   bool wasBuiltOnce();
 
-  bool needsBuild({String manifestPath: _ManifestAssetBundle.defaultManifestPath});
+  bool needsBuild({String manifestPath = _ManifestAssetBundle.defaultManifestPath});
 
   /// Returns 0 for success; non-zero for failure.
   Future<int> build({
-    String manifestPath: _ManifestAssetBundle.defaultManifestPath,
+    String manifestPath = _ManifestAssetBundle.defaultManifestPath,
     String assetDirPath,
     String packagesPath,
-    bool includeDefaultFonts: true,
-    bool reportLicensedPackages: false
+    bool includeDefaultFonts = true,
+    bool reportLicensedPackages = false
   });
 }
 
@@ -74,12 +75,12 @@ class _ManifestAssetBundle implements AssetBundle {
   bool wasBuiltOnce() => _lastBuildTimestamp != null;
 
   @override
-  bool needsBuild({String manifestPath: defaultManifestPath}) {
+  bool needsBuild({String manifestPath = defaultManifestPath}) {
     if (_lastBuildTimestamp == null)
       return true;
 
     final FileStat stat = fs.file(manifestPath).statSync();
-    if (stat.type == FileSystemEntityType.NOT_FOUND) // ignore: deprecated_member_use
+    if (stat.type == FileSystemEntityType.notFound)
       return true;
 
     return stat.modified.isAfter(_lastBuildTimestamp);
@@ -87,11 +88,11 @@ class _ManifestAssetBundle implements AssetBundle {
 
   @override
   Future<int> build({
-    String manifestPath: defaultManifestPath,
+    String manifestPath = defaultManifestPath,
     String assetDirPath,
     String packagesPath,
-    bool includeDefaultFonts: true,
-    bool reportLicensedPackages: false
+    bool includeDefaultFonts = true,
+    bool reportLicensedPackages = false
   }) async {
     assetDirPath ??= getAssetBuildDirectory();
     packagesPath ??= fs.path.absolute(PackageMap.globalPackagesPath);
@@ -268,20 +269,21 @@ Map<String, dynamic> _readMaterialFontsManifest() {
   final String fontsPath = fs.path.join(fs.path.absolute(Cache.flutterRoot),
       'packages', 'flutter_tools', 'schema', 'material_fonts.yaml');
 
-  return loadYaml(fs.file(fontsPath).readAsStringSync());
+  return castStringKeyedMap(loadYaml(fs.file(fontsPath).readAsStringSync()));
 }
 
 final Map<String, dynamic> _materialFontsManifest = _readMaterialFontsManifest();
 
 List<Map<String, dynamic>> _getMaterialFonts(String fontSet) {
-  return _materialFontsManifest[fontSet];
+  final List<dynamic> fontsList = _materialFontsManifest[fontSet];
+  return fontsList?.map<Map<String, dynamic>>(castStringKeyedMap)?.toList();
 }
 
 List<_Asset> _getMaterialAssets(String fontSet) {
   final List<_Asset> result = <_Asset>[];
 
   for (Map<String, dynamic> family in _getMaterialFonts(fontSet)) {
-    for (Map<String, dynamic> font in family['fonts']) {
+    for (Map<dynamic, dynamic> font in family['fonts']) {
       final Uri entryUri = fs.path.toUri(font['asset']);
       result.add(new _Asset(
         baseDir: fs.path.join(Cache.flutterRoot, 'bin', 'cache', 'artifacts', 'material_fonts'),
@@ -521,7 +523,7 @@ Map<_Asset, List<_Asset>> _parseAssets(
   PackageMap packageMap,
   FlutterManifest flutterManifest,
   String assetBase, {
-  List<String> excludeDirs: const <String>[],
+  List<String> excludeDirs = const <String>[],
   String packageName
 }) {
   final Map<_Asset, List<_Asset>> result = <_Asset, List<_Asset>>{};
@@ -566,7 +568,7 @@ void _parseAssetsFromFolder(PackageMap packageMap,
   _AssetDirectoryCache cache,
   Map<_Asset, List<_Asset>> result,
   Uri assetUri, {
-  List<String> excludeDirs: const <String>[],
+  List<String> excludeDirs = const <String>[],
   String packageName
 }) {
   final String directoryPath = fs.path.join(
@@ -597,7 +599,7 @@ void _parseAssetFromFile(PackageMap packageMap,
   _AssetDirectoryCache cache,
   Map<_Asset, List<_Asset>> result,
   Uri assetUri, {
-  List<String> excludeDirs: const <String>[],
+  List<String> excludeDirs = const <String>[],
   String packageName
 }) {
   final _Asset asset = _resolveAsset(
