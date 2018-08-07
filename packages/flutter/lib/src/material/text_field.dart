@@ -380,7 +380,8 @@ class _TextFieldState extends State<TextField> with AutomaticKeepAliveClientMixi
 
   bool get needsCounter => widget.maxLength != null
     && widget.decoration != null
-    && widget.decoration.counterText == null;
+    && widget.decoration.counterText == null
+    && widget.decoration.showCounter;
 
   InputDecoration _getEffectiveDecoration() {
     final InputDecoration effectiveDecoration = (widget.decoration ?? const InputDecoration())

@@ -20,7 +20,7 @@ import 'theme.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = 48.0;
-const double _kDenseButtonHeight = 24.0;
+const double _kDenseButtonHeight = 0.0;
 const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
 const EdgeInsetsGeometry _kAlignedButtonPadding = EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
@@ -592,7 +592,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
       selectedIndex: _selectedIndex ?? 0,
       elevation: widget.elevation,
       theme: Theme.of(context, shadowThemeOnly: true),
-      style: _textStyle,
+      style: Theme.of(context).textTheme.subhead,//_textStyle,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     );
 

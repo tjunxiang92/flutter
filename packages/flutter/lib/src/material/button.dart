@@ -199,7 +199,7 @@ class _RawMaterialButtonState extends State<RawMaterialButton> {
     Size minSize;
     switch (widget.materialTapTargetSize) {
       case MaterialTapTargetSize.padded:
-        minSize = const Size(48.0, 48.0);
+        minSize = const Size(48.0, 36.0);
         break;
       case MaterialTapTargetSize.shrinkWrap:
         minSize = Size.zero;
