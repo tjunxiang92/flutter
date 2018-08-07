@@ -1768,6 +1768,7 @@ class InputDecoration {
     this.suffixStyle,
     this.counterText,
     this.counterStyle,
+    this.showCounter = true,
     this.filled,
     this.fillColor,
     this.border,
@@ -1806,7 +1807,8 @@ class InputDecoration {
        suffixText = null,
        suffixStyle = null,
        counterText = null,
-       counterStyle = null;
+       counterStyle = null,
+       showCounter = true;
 
   /// An icon to show before the input field and outside of the decoration's
   /// container.
@@ -2003,6 +2005,9 @@ class InputDecoration {
   /// If null, defaults to the [helperStyle].
   final TextStyle counterStyle;
 
+  // Whether to show the maxLength counter
+  final bool showCounter;
+
   /// If true the decoration's container is filled with [fillColor].
   ///
   /// Typically this field set to true if [border] is
@@ -2074,6 +2079,7 @@ class InputDecoration {
     TextStyle suffixStyle,
     String counterText,
     TextStyle counterStyle,
+    bool showCounter,
     bool filled,
     Color fillColor,
     InputBorder border,
@@ -2101,6 +2107,7 @@ class InputDecoration {
       suffixStyle: suffixStyle ?? this.suffixStyle,
       counterText: counterText ?? this.counterText,
       counterStyle: counterStyle ?? this.counterStyle,
+      showCounter: showCounter ?? this.showCounter,
       filled: filled ?? this.filled,
       fillColor: fillColor ?? this.fillColor,
       border: border ?? this.border,
@@ -2125,6 +2132,7 @@ class InputDecoration {
       prefixStyle: prefixStyle ?? theme.prefixStyle,
       suffixStyle: suffixStyle ?? theme.suffixStyle,
       counterStyle: counterStyle ?? theme.counterStyle,
+      showCounter: showCounter ?? theme.showCounter,
       filled: filled ?? theme.filled,
       fillColor: fillColor ?? theme.fillColor,
       border: border ?? theme.border,
@@ -2160,6 +2168,7 @@ class InputDecoration {
         && typedOther.suffixStyle == suffixStyle
         && typedOther.counterText == counterText
         && typedOther.counterStyle == counterStyle
+        && typedOther.showCounter == showCounter
         && typedOther.filled == filled
         && typedOther.fillColor == fillColor
         && typedOther.border == border
@@ -2192,6 +2201,7 @@ class InputDecoration {
         suffixStyle,
         counterText,
         counterStyle,
+        showCounter,
         filled,
         fillColor,
         border,
@@ -2239,6 +2249,8 @@ class InputDecoration {
       description.add('counterText: $counterText');
     if (counterStyle != null)
       description.add('counterStyle: $counterStyle');
+    if (showCounter != null)
+      description.add('showCounter: $showCounter');
     if (filled == true) // filled == null same as filled == false
       description.add('filled: true');
     if (fillColor != null)
@@ -2279,7 +2291,8 @@ class InputDecorationTheme extends Diagnosticable {
     this.prefixStyle,
     this.suffixStyle,
     this.counterStyle,
-    this.filled: false,
+    this.showCounter,
+    this.filled = false,
     this.fillColor,
     this.border: const UnderlineInputBorder(),
   }) : assert(isDense != null),
@@ -2366,6 +2379,9 @@ class InputDecorationTheme extends Diagnosticable {
   /// If null, defaults to the [helperStyle].
   final TextStyle counterStyle;
 
+
+  final bool showCounter;
+
   /// If true the decoration's container is filled with [fillColor].
   ///
   /// Typically this field set to true if [border] is
@@ -2423,6 +2439,7 @@ class InputDecorationTheme extends Diagnosticable {
     properties.add(new DiagnosticsProperty<TextStyle>('prefixStyle', prefixStyle, defaultValue: defaultTheme.prefixStyle));
     properties.add(new DiagnosticsProperty<TextStyle>('suffixStyle', suffixStyle, defaultValue: defaultTheme.suffixStyle));
     properties.add(new DiagnosticsProperty<TextStyle>('counterStyle', counterStyle, defaultValue: defaultTheme.counterStyle));
+    properties.add(new DiagnosticsProperty<bool>('showCounter', showCounter, defaultValue: defaultTheme.showCounter));
     properties.add(new DiagnosticsProperty<bool>('filled', filled, defaultValue: defaultTheme.filled));
     properties.add(new DiagnosticsProperty<Color>('fillColor', fillColor, defaultValue: defaultTheme.fillColor));
     properties.add(new DiagnosticsProperty<InputBorder>('border', border, defaultValue: defaultTheme.border));
